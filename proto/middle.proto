@@ -1,10 +1,16 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "api-test/grpc/apitest";
-package test;
 
 service Middle {
-  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+  // Unary RPC
+  rpc Ping(PingRequest) returns (PingResponse) {}
+  // Unary RPC
+  rpc SayHello(HelloRequest) returns (HelloResponse) {}
+  // Server Streaming RPC
+  rpc ReceiveFile(ReceiveFileRequest) returns (stream ReceiveFileResponse) {}
 }
 
 // The request message containing the user's name.
@@ -15,4 +21,18 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloResponse {
   string message = 1;
+}
+
+message PingRequest {}
+
+message PingResponse {
+  google.protobuf.Timestamp timestamp = 1;
+}
+
+message ReceiveFileRequest {
+  string name = 1;
+}
+
+message ReceiveFileResponse {
+  string line = 1;
 }

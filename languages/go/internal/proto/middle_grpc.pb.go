@@ -22,7 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MiddleClient interface {
+	// Unary RPC
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+	// Unary RPC
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+	// Server Streaming RPC
+	ReceiveFile(ctx context.Context, in *ReceiveFileRequest, opts ...grpc.CallOption) (Middle_ReceiveFileClient, error)
 }
 
 type middleClient struct {
@@ -33,20 +38,66 @@ func NewMiddleClient(cc grpc.ClientConnInterface) MiddleClient {
 	return &middleClient{cc}
 }
 
-func (c *middleClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
-	out := new(HelloResponse)
-	err := c.cc.Invoke(ctx, "/test.Middle/SayHello", in, out, opts...)
+func (c *middleClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/Middle/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
+func (c *middleClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
+	out := new(HelloResponse)
+	err := c.cc.Invoke(ctx, "/Middle/SayHello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *middleClient) ReceiveFile(ctx context.Context, in *ReceiveFileRequest, opts ...grpc.CallOption) (Middle_ReceiveFileClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[0], "/Middle/ReceiveFile", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &middleReceiveFileClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Middle_ReceiveFileClient interface {
+	Recv() (*ReceiveFileResponse, error)
+	grpc.ClientStream
+}
+
+type middleReceiveFileClient struct {
+	grpc.ClientStream
+}
+
+func (x *middleReceiveFileClient) Recv() (*ReceiveFileResponse, error) {
+	m := new(ReceiveFileResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MiddleServer is the server API for Middle service.
 // All implementations must embed UnimplementedMiddleServer
 // for forward compatibility
 type MiddleServer interface {
+	// Unary RPC
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
+	// Unary RPC
 	SayHello(context.Context, *HelloRequest) (*HelloResponse, error)
+	// Server Streaming RPC
+	ReceiveFile(*ReceiveFileRequest, Middle_ReceiveFileServer) error
 	mustEmbedUnimplementedMiddleServer()
 }
 
@@ -54,8 +105,14 @@ type MiddleServer interface {
 type UnimplementedMiddleServer struct {
 }
 
+func (UnimplementedMiddleServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
 func (UnimplementedMiddleServer) SayHello(context.Context, *HelloRequest) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+}
+func (UnimplementedMiddleServer) ReceiveFile(*ReceiveFileRequest, Middle_ReceiveFileServer) error {
+	return status.Errorf(codes.Unimplemented, "method ReceiveFile not implemented")
 }
 func (UnimplementedMiddleServer) mustEmbedUnimplementedMiddleServer() {}
 
@@ -70,6 +127,24 @@ func RegisterMiddleServer(s grpc.ServiceRegistrar, srv MiddleServer) {
 	s.RegisterService(&Middle_ServiceDesc, srv)
 }
 
+func _Middle_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MiddleServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Middle/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MiddleServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Middle_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(HelloRequest)
 	if err := dec(in); err != nil {
@@ -80,7 +155,7 @@ func _Middle_SayHello_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/test.Middle/SayHello",
+		FullMethod: "/Middle/SayHello",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MiddleServer).SayHello(ctx, req.(*HelloRequest))
@@ -88,18 +163,49 @@ func _Middle_SayHello_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Middle_ReceiveFile_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ReceiveFileRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MiddleServer).ReceiveFile(m, &middleReceiveFileServer{stream})
+}
+
+type Middle_ReceiveFileServer interface {
+	Send(*ReceiveFileResponse) error
+	grpc.ServerStream
+}
+
+type middleReceiveFileServer struct {
+	grpc.ServerStream
+}
+
+func (x *middleReceiveFileServer) Send(m *ReceiveFileResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Middle_ServiceDesc is the grpc.ServiceDesc for Middle service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Middle_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "test.Middle",
+	ServiceName: "Middle",
 	HandlerType: (*MiddleServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _Middle_Ping_Handler,
+		},
 		{
 			MethodName: "SayHello",
 			Handler:    _Middle_SayHello_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ReceiveFile",
+			Handler:       _Middle_ReceiveFile_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "middle.proto",
 }
