@@ -49,9 +49,9 @@ func (s *GrpcCallHandler) SayHello(ctx context.Context, req *rpc.HelloRequest) (
 	return &response, nil
 }
 
-func (s *GrpcCallHandler) ReceiveFile(
-	req *rpc.ReceiveFileRequest,
-	stream rpc.Middle_ReceiveFileServer,
+func (s *GrpcCallHandler) Download(
+	req *rpc.DownloadRequest,
+	stream rpc.Middle_DownloadServer,
 ) error {
 	absPath, err := filepath.Abs(filepath.Join(resourcePath, req.Filename))
 	if err != nil {
@@ -67,21 +67,23 @@ func (s *GrpcCallHandler) ReceiveFile(
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		stream.Send(&rpc.ReceiveFileResponse{Line: scanner.Text()})
+		stream.Send(&rpc.DownloadResponse{Line: scanner.Text()})
 		<-time.After(time.Second)
 	}
 	return nil
 }
 
-func (s *GrpcCallHandler) SendFile(stream rpc.Middle_SendFileServer) error {
+func (s *GrpcCallHandler) Upload(stream rpc.Middle_UploadServer) error {
 	writtenSize := 0
 	var file *os.File
+
+	log.Println("Upload was triggered")
 
 	for {
 		res, err := stream.Recv()
 
 		if errors.Is(err, io.EOF) {
-			return stream.SendAndClose(&rpc.SendFileResponse{
+			return stream.SendAndClose(&rpc.UploadResponse{
 				Result:      true,
 				WrittenSize: int64(writtenSize),
 			})
@@ -90,7 +92,6 @@ func (s *GrpcCallHandler) SendFile(stream rpc.Middle_SendFileServer) error {
 		if err != nil {
 			return err
 		}
-
 		if file == nil {
 			if res.GetFilename() == "" {
 				return errors.New("filename must be specified")
@@ -108,6 +109,7 @@ func (s *GrpcCallHandler) SendFile(stream rpc.Middle_SendFileServer) error {
 			defer file.Close()
 		} else {
 			if len(res.GetChunk()) > 0 {
+				log.Printf("received: %s\n", string(res.GetChunk()))
 				length, err := file.Write(res.GetChunk())
 				if err != nil {
 					return fmt.Errorf("failed to write chunk: %w", err)

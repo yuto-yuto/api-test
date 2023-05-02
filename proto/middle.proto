@@ -10,9 +10,9 @@ service Middle {
   // Unary RPC
   rpc SayHello(HelloRequest) returns (HelloResponse) {}
   // Server Streaming RPC
-  rpc ReceiveFile(ReceiveFileRequest) returns (stream ReceiveFileResponse) {}
+  rpc Download(DownloadRequest) returns (stream DownloadResponse) {}
   // Client Streaming RPC
-  rpc SendFile(stream SendFileRequest) returns (SendFileResponse) {}
+  rpc Upload(stream UploadRequest) returns (UploadResponse) {}
 }
 
 // The request message containing the user's name.
@@ -31,20 +31,20 @@ message PingResponse {
   google.protobuf.Timestamp timestamp = 1;
 }
 
-message ReceiveFileRequest {
+message DownloadRequest {
   string filename = 1;
 }
 
-message ReceiveFileResponse {
+message DownloadResponse {
   string line = 1;
 }
 
-message SendFileRequest {
+message UploadRequest {
   string filename = 1;
   bytes chunk = 2;
 }
 
-message SendFileResponse {
+message UploadResponse {
   bool result = 1;
   int64 writtenSize = 2;
 }

@@ -27,9 +27,9 @@ type MiddleClient interface {
 	// Unary RPC
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
 	// Server Streaming RPC
-	ReceiveFile(ctx context.Context, in *ReceiveFileRequest, opts ...grpc.CallOption) (Middle_ReceiveFileClient, error)
+	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (Middle_DownloadClient, error)
 	// Client Streaming RPC
-	SendFile(ctx context.Context, opts ...grpc.CallOption) (Middle_SendFileClient, error)
+	Upload(ctx context.Context, opts ...grpc.CallOption) (Middle_UploadClient, error)
 }
 
 type middleClient struct {
@@ -58,12 +58,12 @@ func (c *middleClient) SayHello(ctx context.Context, in *HelloRequest, opts ...g
 	return out, nil
 }
 
-func (c *middleClient) ReceiveFile(ctx context.Context, in *ReceiveFileRequest, opts ...grpc.CallOption) (Middle_ReceiveFileClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[0], "/Middle/ReceiveFile", opts...)
+func (c *middleClient) Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (Middle_DownloadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[0], "/Middle/Download", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &middleReceiveFileClient{stream}
+	x := &middleDownloadClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -73,51 +73,51 @@ func (c *middleClient) ReceiveFile(ctx context.Context, in *ReceiveFileRequest, 
 	return x, nil
 }
 
-type Middle_ReceiveFileClient interface {
-	Recv() (*ReceiveFileResponse, error)
+type Middle_DownloadClient interface {
+	Recv() (*DownloadResponse, error)
 	grpc.ClientStream
 }
 
-type middleReceiveFileClient struct {
+type middleDownloadClient struct {
 	grpc.ClientStream
 }
 
-func (x *middleReceiveFileClient) Recv() (*ReceiveFileResponse, error) {
-	m := new(ReceiveFileResponse)
+func (x *middleDownloadClient) Recv() (*DownloadResponse, error) {
+	m := new(DownloadResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *middleClient) SendFile(ctx context.Context, opts ...grpc.CallOption) (Middle_SendFileClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[1], "/Middle/SendFile", opts...)
+func (c *middleClient) Upload(ctx context.Context, opts ...grpc.CallOption) (Middle_UploadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[1], "/Middle/Upload", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &middleSendFileClient{stream}
+	x := &middleUploadClient{stream}
 	return x, nil
 }
 
-type Middle_SendFileClient interface {
-	Send(*SendFileRequest) error
-	CloseAndRecv() (*SendFileResponse, error)
+type Middle_UploadClient interface {
+	Send(*UploadRequest) error
+	CloseAndRecv() (*UploadResponse, error)
 	grpc.ClientStream
 }
 
-type middleSendFileClient struct {
+type middleUploadClient struct {
 	grpc.ClientStream
 }
 
-func (x *middleSendFileClient) Send(m *SendFileRequest) error {
+func (x *middleUploadClient) Send(m *UploadRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *middleSendFileClient) CloseAndRecv() (*SendFileResponse, error) {
+func (x *middleUploadClient) CloseAndRecv() (*UploadResponse, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(SendFileResponse)
+	m := new(UploadResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -133,9 +133,9 @@ type MiddleServer interface {
 	// Unary RPC
 	SayHello(context.Context, *HelloRequest) (*HelloResponse, error)
 	// Server Streaming RPC
-	ReceiveFile(*ReceiveFileRequest, Middle_ReceiveFileServer) error
+	Download(*DownloadRequest, Middle_DownloadServer) error
 	// Client Streaming RPC
-	SendFile(Middle_SendFileServer) error
+	Upload(Middle_UploadServer) error
 	mustEmbedUnimplementedMiddleServer()
 }
 
@@ -149,11 +149,11 @@ func (UnimplementedMiddleServer) Ping(context.Context, *PingRequest) (*PingRespo
 func (UnimplementedMiddleServer) SayHello(context.Context, *HelloRequest) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
-func (UnimplementedMiddleServer) ReceiveFile(*ReceiveFileRequest, Middle_ReceiveFileServer) error {
-	return status.Errorf(codes.Unimplemented, "method ReceiveFile not implemented")
+func (UnimplementedMiddleServer) Download(*DownloadRequest, Middle_DownloadServer) error {
+	return status.Errorf(codes.Unimplemented, "method Download not implemented")
 }
-func (UnimplementedMiddleServer) SendFile(Middle_SendFileServer) error {
-	return status.Errorf(codes.Unimplemented, "method SendFile not implemented")
+func (UnimplementedMiddleServer) Upload(Middle_UploadServer) error {
+	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
 }
 func (UnimplementedMiddleServer) mustEmbedUnimplementedMiddleServer() {}
 
@@ -204,47 +204,47 @@ func _Middle_SayHello_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Middle_ReceiveFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ReceiveFileRequest)
+func _Middle_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DownloadRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MiddleServer).ReceiveFile(m, &middleReceiveFileServer{stream})
+	return srv.(MiddleServer).Download(m, &middleDownloadServer{stream})
 }
 
-type Middle_ReceiveFileServer interface {
-	Send(*ReceiveFileResponse) error
+type Middle_DownloadServer interface {
+	Send(*DownloadResponse) error
 	grpc.ServerStream
 }
 
-type middleReceiveFileServer struct {
+type middleDownloadServer struct {
 	grpc.ServerStream
 }
 
-func (x *middleReceiveFileServer) Send(m *ReceiveFileResponse) error {
+func (x *middleDownloadServer) Send(m *DownloadResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Middle_SendFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(MiddleServer).SendFile(&middleSendFileServer{stream})
+func _Middle_Upload_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(MiddleServer).Upload(&middleUploadServer{stream})
 }
 
-type Middle_SendFileServer interface {
-	SendAndClose(*SendFileResponse) error
-	Recv() (*SendFileRequest, error)
+type Middle_UploadServer interface {
+	SendAndClose(*UploadResponse) error
+	Recv() (*UploadRequest, error)
 	grpc.ServerStream
 }
 
-type middleSendFileServer struct {
+type middleUploadServer struct {
 	grpc.ServerStream
 }
 
-func (x *middleSendFileServer) SendAndClose(m *SendFileResponse) error {
+func (x *middleUploadServer) SendAndClose(m *UploadResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *middleSendFileServer) Recv() (*SendFileRequest, error) {
-	m := new(SendFileRequest)
+func (x *middleUploadServer) Recv() (*UploadRequest, error) {
+	m := new(UploadRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -269,13 +269,13 @@ var Middle_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ReceiveFile",
-			Handler:       _Middle_ReceiveFile_Handler,
+			StreamName:    "Download",
+			Handler:       _Middle_Download_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "SendFile",
-			Handler:       _Middle_SendFile_Handler,
+			StreamName:    "Upload",
+			Handler:       _Middle_Upload_Handler,
 			ClientStreams: true,
 		},
 	},
