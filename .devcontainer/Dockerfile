@@ -3,6 +3,11 @@ FROM mcr.microsoft.com/devcontainers/go:0-1.20
 # To format proto file with vscode-proto3 extension
 RUN apt update && apt install clang-format --yes
 
+# Install the compiler for protocol buffer
+RUN curl -LO "https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip" && \
+    unzip protoc-22.3-linux-x86_64.zip -d /usr/local && \
+    rm protoc-22.3-linux-x86_64.zip
+
 USER vscode
 
 RUN go install mvdan.cc/gofumpt@v0.5.0 && \

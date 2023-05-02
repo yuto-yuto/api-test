@@ -11,6 +11,8 @@ service Middle {
   rpc SayHello(HelloRequest) returns (HelloResponse) {}
   // Server Streaming RPC
   rpc ReceiveFile(ReceiveFileRequest) returns (stream ReceiveFileResponse) {}
+  // Client Streaming RPC
+  rpc SendFile(stream SendFileRequest) returns (SendFileResponse) {}
 }
 
 // The request message containing the user's name.
@@ -30,9 +32,19 @@ message PingResponse {
 }
 
 message ReceiveFileRequest {
-  string name = 1;
+  string filename = 1;
 }
 
 message ReceiveFileResponse {
   string line = 1;
+}
+
+message SendFileRequest {
+  string filename = 1;
+  bytes chunk = 2;
+}
+
+message SendFileResponse {
+  bool result = 1;
+  int64 writtenSize = 2;
 }

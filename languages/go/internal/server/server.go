@@ -3,7 +3,9 @@ package server
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -15,8 +17,9 @@ import (
 )
 
 const (
-	Bit64 = 64
-	DEC   = 10
+	Bit64        = 64
+	DEC          = 10
+	resourcePath = "./internal/server/resources/"
 )
 
 type GrpcCallHandler struct {
@@ -50,7 +53,7 @@ func (s *GrpcCallHandler) ReceiveFile(
 	req *rpc.ReceiveFileRequest,
 	stream rpc.Middle_ReceiveFileServer,
 ) error {
-	absPath, err := filepath.Abs(fmt.Sprintf("./internal/server/resources/%s", req.Name))
+	absPath, err := filepath.Abs(filepath.Join(resourcePath, req.Filename))
 	if err != nil {
 		return fmt.Errorf("failed to get absolute path: %w", err)
 	}
@@ -68,4 +71,49 @@ func (s *GrpcCallHandler) ReceiveFile(
 		<-time.After(time.Second)
 	}
 	return nil
+}
+
+func (s *GrpcCallHandler) SendFile(stream rpc.Middle_SendFileServer) error {
+	writtenSize := 0
+	var file *os.File
+
+	for {
+		res, err := stream.Recv()
+
+		if errors.Is(err, io.EOF) {
+			return stream.SendAndClose(&rpc.SendFileResponse{
+				Result:      true,
+				WrittenSize: int64(writtenSize),
+			})
+		}
+
+		if err != nil {
+			return err
+		}
+
+		if file == nil {
+			if res.GetFilename() == "" {
+				return errors.New("filename must be specified")
+			}
+
+			absPath, err := filepath.Abs(filepath.Join(resourcePath, "from_client", res.GetFilename()))
+			if err != nil {
+				return fmt.Errorf("failed to get absolute path: %w", err)
+			}
+
+			file, err = os.Create(absPath)
+			if err != nil {
+				return fmt.Errorf("failed to create a file: %w", err)
+			}
+			defer file.Close()
+		} else {
+			if len(res.GetChunk()) > 0 {
+				length, err := file.Write(res.GetChunk())
+				if err != nil {
+					return fmt.Errorf("failed to write chunk: %w", err)
+				}
+				writtenSize += length
+			}
+		}
+	}
 }

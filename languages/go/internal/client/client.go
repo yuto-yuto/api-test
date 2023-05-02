@@ -50,16 +50,16 @@ func (m *MiddleMan) Greet(ctx context.Context, name string) {
 }
 
 // ReceiveFile(ctx context.Context, in *ReceiveFileRequest, opts ...grpc.CallOption) (Middle_ReceiveFileClient, error)
-func (m *MiddleMan) ReceiveFile(ctx context.Context, name string) {
+func (m *MiddleMan) ReceiveFile(ctx context.Context, filename string) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	client := rpc.NewMiddleClient(m.conn)
 	// log.Printf("start receiving a file [%s]", name)
 
-	stream, err := client.ReceiveFile(timeoutCtx, &rpc.ReceiveFileRequest{Name: name})
+	stream, err := client.ReceiveFile(timeoutCtx, &rpc.ReceiveFileRequest{Filename: filename})
 	if err != nil {
-		log.Printf("[ERROR] failed to create a stream for ReceiveFile: %w\n", err)
+		log.Printf("[ERROR] failed to create a stream for ReceiveFile: %v\n", err)
 		return
 	}
 
@@ -71,7 +71,7 @@ func (m *MiddleMan) ReceiveFile(ctx context.Context, name string) {
 		}
 
 		if err != nil {
-			log.Printf("[ERROR] failed to receive data: %w\n", err)
+			log.Printf("[ERROR] failed to receive data for [%s]: %v\n", filename, err)
 			break
 		}
 		log.Println(res.GetLine())

@@ -1,3 +1,6 @@
 {
-    "clang-format.style": "google"
+    "clang-format.style": "google",
+    "[proto3]": {
+        "editor.defaultFormatter": "zxh404.vscode-proto3"
+    },
 }
