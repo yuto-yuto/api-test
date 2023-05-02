@@ -20,7 +20,7 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	
+
 	rpc.RegisterMiddleServer(server, pb.NewGrpcCallHandler())
 
 	go func() {

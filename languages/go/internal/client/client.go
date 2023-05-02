@@ -71,7 +71,7 @@ func (m *MiddleMan) ReceiveFile(ctx context.Context, name string) {
 		}
 
 		if err != nil {
-			log.Printf("[ERROR] failed to receive data: %w\n",err)
+			log.Printf("[ERROR] failed to receive data: %w\n", err)
 			break
 		}
 		log.Println(res.GetLine())
@@ -79,5 +79,4 @@ func (m *MiddleMan) ReceiveFile(ctx context.Context, name string) {
 	}
 
 	log.Printf("File content is as follows\n%s\n", strings.Join(lines, "\n"))
-
 }

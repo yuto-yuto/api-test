@@ -1,12 +1,13 @@
 package main
 
 import (
-	"apitest/internal/client"
 	"context"
 	"log"
 	"os"
 	"os/signal"
 	"time"
+
+	"apitest/internal/client"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

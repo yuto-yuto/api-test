@@ -50,7 +50,6 @@ func (s *GrpcCallHandler) ReceiveFile(
 	req *rpc.ReceiveFileRequest,
 	stream rpc.Middle_ReceiveFileServer,
 ) error {
-
 	absPath, err := filepath.Abs(fmt.Sprintf("./internal/server/resources/%s", req.Name))
 	if err != nil {
 		return fmt.Errorf("failed to get absolute path: %w", err)
@@ -68,6 +67,5 @@ func (s *GrpcCallHandler) ReceiveFile(
 		stream.Send(&rpc.ReceiveFileResponse{Line: scanner.Text()})
 		<-time.After(time.Second)
 	}
-
 	return nil
 }

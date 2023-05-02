@@ -10,3 +10,6 @@ runServer:
 
 runClient:
 	@go run ./cmd/client/main.go
+
+lint:
+	@golangci-lint run
