@@ -47,4 +47,5 @@ message UploadRequest {
 message UploadResponse {
   bool result = 1;
   int64 writtenSize = 2;
+  string message = 3;
 }

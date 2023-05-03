@@ -30,8 +30,8 @@ func main() {
 	ctx := context.Background()
 	middleMan.Greet(ctx, "Yuto")
 
-	go middleMan.Download(ctx, "test_file.txt")
-	middleMan.Download(ctx, "not_exist.txt")
+	// go middleMan.Download(ctx, "test_file.txt")
+	// middleMan.Download(ctx, "not_exist.txt")
 
 	middleMan.Upload(ctx, "data.txt")
 

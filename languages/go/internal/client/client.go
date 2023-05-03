@@ -121,9 +121,23 @@ func (m *MiddleMan) Upload(ctx context.Context, filename string) {
 		log.Printf("send chunk: %s", chunk)
 		if err := stream.Send(&rpc.UploadRequest{Filename: filename, Chunk: scanner.Bytes()}); err != nil {
 			log.Printf("[ERROR] failed to send data: %v", err)
-			return
+
+			trailer := stream.Trailer()
+			v, exist := trailer["error"]
+			if exist { // there is an error
+				log.Println("Error: ", v)
+			}
+
+			break
 		}
 		<-time.After(time.Second)
 	}
-	log.Printf("completed to upload file [%s]\n", filename)
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Printf("failed to close: %v\n", err)
+	}
+
+	log.Printf("completed to upload file [%s]\nresult: %t\nwrittenSize: %d\nmessage: %s\n)",
+		filename, res.GetResult(), res.GetWrittenSize(), res.GetMessage())
 }

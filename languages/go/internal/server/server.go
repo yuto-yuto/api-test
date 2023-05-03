@@ -13,6 +13,8 @@ import (
 
 	rpc "apitest/internal/proto"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -81,39 +83,45 @@ func (s *GrpcCallHandler) Upload(stream rpc.Middle_UploadServer) error {
 
 	for {
 		res, err := stream.Recv()
-
-		if errors.Is(err, io.EOF) {
-			return stream.SendAndClose(&rpc.UploadResponse{
-				Result:      true,
-				WrittenSize: int64(writtenSize),
-			})
-		}
-
 		if err != nil {
+			if errors.Is(err, io.EOF) {
+				return stream.SendAndClose(&rpc.UploadResponse{
+					Result:      true,
+					WrittenSize: int64(writtenSize),
+					Message:     "COMPLETED",
+				})
+			}
+
 			return err
 		}
+
 		if file == nil {
 			if res.GetFilename() == "" {
-				return errors.New("filename must be specified")
+				return status.Errorf(codes.InvalidArgument, "filename must be specified")
 			}
 
 			absPath, err := filepath.Abs(filepath.Join(resourcePath, "from_client", res.GetFilename()))
 			if err != nil {
-				return fmt.Errorf("failed to get absolute path: %w", err)
+				errorMsg := fmt.Sprintf("failed to get absolute path: %v", err)
+				return status.Errorf(codes.Internal, errorMsg)
 			}
 
 			file, err = os.Create(absPath)
 			if err != nil {
-				return fmt.Errorf("failed to create a file: %w", err)
+				errorMsg := fmt.Sprintf("failed to create a file: %v", err)
+				return status.Errorf(codes.PermissionDenied, errorMsg)
 			}
 			defer file.Close()
 		} else {
 			if len(res.GetChunk()) > 0 {
 				log.Printf("received: %s\n", string(res.GetChunk()))
+
 				length, err := file.Write(res.GetChunk())
 				if err != nil {
-					return fmt.Errorf("failed to write chunk: %w", err)
+					errorMsg := fmt.Sprintf("failed to write chunk: %v", err)
+					return status.Errorf(codes.Internal, errorMsg)
 				}
+
 				writtenSize += length
 			}
 		}
