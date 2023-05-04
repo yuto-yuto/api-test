@@ -33,7 +33,9 @@ func main() {
 	// go middleMan.Download(ctx, "test_file.txt")
 	// middleMan.Download(ctx, "not_exist.txt")
 
-	middleMan.Upload(ctx, "data.txt")
+	// middleMan.Upload(ctx, "data.txt")
+
+	middleMan.Communicate(ctx, 10)
 
 	go func() {
 		for i := 0; i < 3; i++ {

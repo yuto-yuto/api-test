@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
@@ -92,7 +93,7 @@ func (s *GrpcCallHandler) Upload(stream rpc.Middle_UploadServer) error {
 				})
 			}
 
-			return err
+			return status.Errorf(codes.Unknown, "[ERROR] failed to upload: %w\n", err)
 		}
 
 		if file == nil {
@@ -126,4 +127,51 @@ func (s *GrpcCallHandler) Upload(stream rpc.Middle_UploadServer) error {
 			}
 		}
 	}
+}
+
+func (s *GrpcCallHandler) Communicate(stream rpc.Middle_CommunicateServer) error {
+	ctx := stream.Context()
+
+	res, err := stream.Recv()
+	if err != nil {
+		return status.Errorf(codes.Unknown, "[ERROR] failed to communicate: %w\n", err)
+	}
+
+	if res.Max == nil {
+		return status.Error(codes.InvalidArgument, "[ERROR] failed to communicate. Max must be specified.")
+	}
+	maxCount := res.GetMax()
+	receivedValue := res.GetValue()
+
+	for currentCount := 0; ; currentCount++ {
+		randomValue := rand.Intn(100)
+		sum := receivedValue + int64(randomValue)
+		err = stream.Send(&rpc.CommunicateResponse{
+			CurrentCount: int64(currentCount),
+			Value:        sum,
+		})
+
+		if err != nil {
+			return status.Errorf(codes.Unknown, "[ERROR] failed to send: %w\n", err)
+		}
+		log.Printf("send value (%d): %d + %d = %d", currentCount+1, receivedValue, randomValue, sum)
+
+		if currentCount >= int(maxCount) {
+			break
+		}
+
+		select {
+		case <-ctx.Done():
+			return status.Error(codes.DeadlineExceeded, "[ERROR] communication ends")
+		case <-time.After(time.Second):
+			res, err := stream.Recv()
+			if err != nil {
+				return status.Errorf(codes.Unknown, "[ERROR] failed to receive: %w\n", err)
+			}
+			receivedValue = res.GetValue()
+		}
+	}
+
+	log.Println("Communicatiopn ends")
+	return nil
 }

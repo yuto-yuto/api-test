@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
@@ -140,4 +141,49 @@ func (m *MiddleMan) Upload(ctx context.Context, filename string) {
 
 	log.Printf("completed to upload file [%s]\nresult: %t\nwrittenSize: %d\nmessage: %s\n)",
 		filename, res.GetResult(), res.GetWrittenSize(), res.GetMessage())
+}
+
+func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, 100*time.Second)
+	defer cancel()
+
+	client := rpc.NewMiddleClient(m.conn)
+	stream, err := client.Communicate(timeoutCtx)
+	if err != nil {
+		log.Printf("[ERROR] failed to create a stream: %v\n", err)
+		return
+	}
+
+	err = stream.Send(&rpc.CommunicateRequest{
+		Max:   &maxCount,
+		Value: 5,
+	})
+	if err != nil {
+		log.Printf("[ERROR] failed to send initial values:%v", err)
+		return
+	}
+
+	for count := 0; count < int(maxCount); count++ {
+		res, err := stream.Recv()
+		if err != nil {
+			log.Printf("[ERROR] failed to receive: %w\n", err)
+			return
+		}
+
+		log.Printf("received value (%d): %d", count+1, res.GetValue())
+
+		randomValue := rand.Intn(10)
+		err = stream.Send(&rpc.CommunicateRequest{
+			Value: res.GetValue() + int64(randomValue),
+		})
+		if err != nil {
+			log.Printf("[ERROR] failed to send value:%v", err)
+			return
+		}
+	}
+
+	err = stream.CloseSend()
+	if err != nil {
+		log.Printf("[ERROR] failed to close and send: %v", err)
+	}
 }

@@ -13,6 +13,9 @@ service Middle {
   rpc Download(DownloadRequest) returns (stream DownloadResponse) {}
   // Client Streaming RPC
   rpc Upload(stream UploadRequest) returns (UploadResponse) {}
+  // Bidirectional Streaming RPC
+  rpc Communicate(stream CommunicateRequest)
+      returns (stream CommunicateResponse) {}
 }
 
 // The request message containing the user's name.
@@ -48,4 +51,21 @@ message UploadResponse {
   bool result = 1;
   int64 writtenSize = 2;
   string message = 3;
+}
+
+enum CommunicationType {
+  COMMUNICATION_TYPE_UNSPECIFIED = 0;
+  COMMUNICATION_TYPE_PING_PONG = 1;
+  COMMUNICATION_TYPE_MESSAGE = 2;
+  COMMUNICATION_TYPE_END_REQUEST = 3;
+}
+
+message CommunicateRequest {
+  optional int64 max = 1;
+  int64 value = 2;
+}
+
+message CommunicateResponse {
+  int64 currentCount = 1;
+  int64 value = 2;
 }

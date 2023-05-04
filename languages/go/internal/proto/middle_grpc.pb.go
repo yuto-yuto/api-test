@@ -30,6 +30,8 @@ type MiddleClient interface {
 	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (Middle_DownloadClient, error)
 	// Client Streaming RPC
 	Upload(ctx context.Context, opts ...grpc.CallOption) (Middle_UploadClient, error)
+	// Bidirectional Streaming RPC
+	Communicate(ctx context.Context, opts ...grpc.CallOption) (Middle_CommunicateClient, error)
 }
 
 type middleClient struct {
@@ -124,6 +126,37 @@ func (x *middleUploadClient) CloseAndRecv() (*UploadResponse, error) {
 	return m, nil
 }
 
+func (c *middleClient) Communicate(ctx context.Context, opts ...grpc.CallOption) (Middle_CommunicateClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Middle_ServiceDesc.Streams[2], "/Middle/Communicate", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &middleCommunicateClient{stream}
+	return x, nil
+}
+
+type Middle_CommunicateClient interface {
+	Send(*CommunicateRequest) error
+	Recv() (*CommunicateResponse, error)
+	grpc.ClientStream
+}
+
+type middleCommunicateClient struct {
+	grpc.ClientStream
+}
+
+func (x *middleCommunicateClient) Send(m *CommunicateRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *middleCommunicateClient) Recv() (*CommunicateResponse, error) {
+	m := new(CommunicateResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MiddleServer is the server API for Middle service.
 // All implementations must embed UnimplementedMiddleServer
 // for forward compatibility
@@ -136,6 +169,8 @@ type MiddleServer interface {
 	Download(*DownloadRequest, Middle_DownloadServer) error
 	// Client Streaming RPC
 	Upload(Middle_UploadServer) error
+	// Bidirectional Streaming RPC
+	Communicate(Middle_CommunicateServer) error
 	mustEmbedUnimplementedMiddleServer()
 }
 
@@ -154,6 +189,9 @@ func (UnimplementedMiddleServer) Download(*DownloadRequest, Middle_DownloadServe
 }
 func (UnimplementedMiddleServer) Upload(Middle_UploadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
+}
+func (UnimplementedMiddleServer) Communicate(Middle_CommunicateServer) error {
+	return status.Errorf(codes.Unimplemented, "method Communicate not implemented")
 }
 func (UnimplementedMiddleServer) mustEmbedUnimplementedMiddleServer() {}
 
@@ -251,6 +289,32 @@ func (x *middleUploadServer) Recv() (*UploadRequest, error) {
 	return m, nil
 }
 
+func _Middle_Communicate_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(MiddleServer).Communicate(&middleCommunicateServer{stream})
+}
+
+type Middle_CommunicateServer interface {
+	Send(*CommunicateResponse) error
+	Recv() (*CommunicateRequest, error)
+	grpc.ServerStream
+}
+
+type middleCommunicateServer struct {
+	grpc.ServerStream
+}
+
+func (x *middleCommunicateServer) Send(m *CommunicateResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *middleCommunicateServer) Recv() (*CommunicateRequest, error) {
+	m := new(CommunicateRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Middle_ServiceDesc is the grpc.ServiceDesc for Middle service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -276,6 +340,12 @@ var Middle_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Upload",
 			Handler:       _Middle_Upload_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "Communicate",
+			Handler:       _Middle_Communicate_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},
