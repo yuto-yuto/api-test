@@ -14,6 +14,8 @@ import (
 
 	rpc "apitest/internal/proto"
 
+	"apitest/internal/common"
+
 	"google.golang.org/grpc"
 )
 
@@ -123,11 +125,7 @@ func (m *MiddleMan) Upload(ctx context.Context, filename string) {
 		if err := stream.Send(&rpc.UploadRequest{Filename: filename, Chunk: scanner.Bytes()}); err != nil {
 			log.Printf("[ERROR] failed to send data: %v", err)
 
-			trailer := stream.Trailer()
-			v, exist := trailer["error"]
-			if exist { // there is an error
-				log.Println("Error: ", v)
-			}
+			common.ShowErrorMessageInTrailer(stream)
 
 			break
 		}
@@ -163,10 +161,15 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		return
 	}
 
-	for count := 0; count < int(maxCount); count++ {
+	for count := 0; ; count++ {
 		res, err := stream.Recv()
 		if err != nil {
-			log.Printf("[ERROR] failed to receive: %w\n", err)
+			if errors.Is(err, io.EOF) {
+				common.ShowErrorMessageInTrailer(stream)
+				break
+			}
+
+			log.Printf("[ERROR] failed to receive: %v\n", err)
 			return
 		}
 
@@ -176,7 +179,13 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		err = stream.Send(&rpc.CommunicateRequest{
 			Value: res.GetValue() + int64(randomValue),
 		})
+
 		if err != nil {
+			if errors.Is(err, io.EOF) {
+				common.ShowErrorMessageInTrailer(stream)
+				break
+			}
+
 			log.Printf("[ERROR] failed to send value:%v", err)
 			return
 		}
@@ -185,5 +194,7 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 	err = stream.CloseSend()
 	if err != nil {
 		log.Printf("[ERROR] failed to close and send: %v", err)
+	} else {
+		log.Println("Communication ends")
 	}
 }

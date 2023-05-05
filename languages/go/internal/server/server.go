@@ -143,7 +143,7 @@ func (s *GrpcCallHandler) Communicate(stream rpc.Middle_CommunicateServer) error
 	maxCount := res.GetMax()
 	receivedValue := res.GetValue()
 
-	for currentCount := 0; ; currentCount++ {
+	for currentCount := 0; currentCount < int(maxCount); currentCount++ {
 		randomValue := rand.Intn(100)
 		sum := receivedValue + int64(randomValue)
 		err = stream.Send(&rpc.CommunicateResponse{
@@ -151,14 +151,14 @@ func (s *GrpcCallHandler) Communicate(stream rpc.Middle_CommunicateServer) error
 			Value:        sum,
 		})
 
+		if randomValue >= 8 {
+			// return status.Errorf(codes.Internal, "[ERROR] random value is too big. Value was [%d]", randomValue)
+		}
+
 		if err != nil {
 			return status.Errorf(codes.Unknown, "[ERROR] failed to send: %w\n", err)
 		}
 		log.Printf("send value (%d): %d + %d = %d", currentCount+1, receivedValue, randomValue, sum)
-
-		if currentCount >= int(maxCount) {
-			break
-		}
 
 		select {
 		case <-ctx.Done():
