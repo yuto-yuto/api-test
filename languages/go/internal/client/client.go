@@ -40,7 +40,8 @@ func (m *MiddleMan) SendPing(ctx context.Context) {
 	client := rpc.NewMiddleClient(m.conn)
 	res, err := client.Ping(timeoutCtx, &rpc.PingRequest{})
 	if err != nil {
-		log.Fatalf("[ERROR] filed to ping: %v", err)
+		log.Printf("[ERROR] filed to ping: %v\n", err)
+		return
 	}
 
 	log.Printf("Time: %s\n", res.GetTimestamp().AsTime().Format(time.RFC3339Nano))
@@ -53,7 +54,8 @@ func (m *MiddleMan) Greet(ctx context.Context, name string) {
 	client := rpc.NewMiddleClient(m.conn)
 	res, err := client.SayHello(timeoutCtx, &rpc.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("[ERROR] could not greet: %v", err)
+		log.Printf("[ERROR] could not greet: %v\n", err)
+		return
 	}
 
 	log.Printf("Greeting: %s\n", res.GetMessage())
@@ -179,10 +181,11 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		err = stream.Send(&rpc.CommunicateRequest{
 			Value: res.GetValue() + int64(randomValue),
 		})
-
 		if err != nil {
 			if errors.Is(err, io.EOF) {
-				common.ShowErrorMessageInTrailer(stream)
+				_, err := stream.Recv()
+				log.Printf("[ERROR] failed to receive: %v\n", err)
+				common.ShowErrorMessageInTrailer(stream) // not show anything
 				break
 			}
 

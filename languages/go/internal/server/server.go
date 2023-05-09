@@ -151,8 +151,8 @@ func (s *GrpcCallHandler) Communicate(stream rpc.Middle_CommunicateServer) error
 			Value:        sum,
 		})
 
-		if randomValue >= 8 {
-			// return status.Errorf(codes.Internal, "[ERROR] random value is too big. Value was [%d]", randomValue)
+		if randomValue >= 80 {
+			return status.Errorf(codes.Internal, "[ERROR] random value is too big. Value was [%d]", randomValue)
 		}
 
 		if err != nil {
