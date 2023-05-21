@@ -1,4 +1,4 @@
-.PHONY: generate runServer
+.PHONY: generate runServer runClient lint
 
 generate:
 	@protoc --go_out=./internal/proto --go_opt=paths=source_relative \
