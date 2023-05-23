@@ -27,7 +27,8 @@ func main() {
 
 	middleMan := client.NewMiddleMan(grpcConn)
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	middleMan.Greet(ctx, "Yuto")
 
 	// go middleMan.Download(ctx, "test_file.txt")
@@ -35,7 +36,7 @@ func main() {
 
 	// middleMan.Upload(ctx, "data.txt")
 
-	middleMan.Communicate(ctx, 10)
+	// middleMan.Communicate(ctx, 10)
 
 	go func() {
 		for i := 0; i < 3; i++ {

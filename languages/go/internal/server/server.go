@@ -27,12 +27,10 @@ const (
 
 type GrpcCallHandler struct {
 	rpc.UnimplementedMiddleServer
-	dataUpdater DataUpdater
 }
 
 func NewGrpcCallHandler() *GrpcCallHandler {
 	return &GrpcCallHandler{
-		dataUpdater: *NewDataUpdater(),
 	}
 }
 
