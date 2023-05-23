@@ -189,6 +189,8 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 				break
 			}
 
+			// when the connection is lost...
+			// [ERROR] failed to receive: rpc error: code = Unavailable desc = error reading from server: EOF
 			log.Printf("[ERROR] failed to send value:%v", err)
 			return
 		}
