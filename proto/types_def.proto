@@ -14,6 +14,9 @@ message VariousDefRequest {
   }
   PrimitiveType primitive = 4;
   optional int64 option_value = 5;
+  repeated int64 int_array = 6;
+  repeated StringIntegerValue string_int_array = 7;
+  map<string, int64> map_value = 8;
 }
 
 message VariousDefResponse {}
@@ -30,4 +33,11 @@ message PrimitiveType {
     }
   }
   Value value = 1;
+}
+
+message StringIntegerValue {
+  oneof value {
+    string text = 1;
+    int64 number = 2;
+  }
 }
