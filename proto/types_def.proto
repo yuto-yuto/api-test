@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option go_package = "pkg/api-test/grpc/apitest";
+
+service TypesDef {
+  rpc VariousDef(VariousDefRequest) returns (VariousDefResponse) {}
+}
+
+message VariousDefRequest {
+  int64 val_int64 = 1;
+  oneof one_of_value {
+    int64 number = 2;
+    string text = 3;
+  }
+  PrimitiveType primitive = 4;
+  optional int64 option_value = 5;
+}
+
+message VariousDefResponse {}
+
+message PrimitiveType {
+  message Value {
+    oneof element {
+      string text = 1;
+      double double_value = 2;
+      int64 int64_value = 3;
+      uint64 uint64_value = 4;
+      bool boolean = 5;
+      bytes raw_bytes = 6;
+    }
+  }
+  Value value = 1;
+}
