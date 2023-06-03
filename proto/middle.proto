@@ -61,7 +61,7 @@ enum CommunicationType {
 }
 
 message CommunicateRequest {
-  optional int64 max = 1;
+  int64 max = 1;
   int64 value = 2;
 }
 

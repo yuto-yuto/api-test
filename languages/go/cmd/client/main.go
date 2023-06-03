@@ -41,21 +41,21 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	middleMan.Greet(ctx, "Yuto")
+	// middleMan.Greet(ctx, "Yuto")
 
 	// go middleMan.Download(ctx, "test_file.txt")
 	// middleMan.Download(ctx, "not_exist.txt")
 
 	// middleMan.Upload(ctx, "data.txt")
 
-	// middleMan.Communicate(ctx, 10)
+	middleMan.Communicate(ctx, 4)
 
-	go func() {
-		for i := 0; i < 3; i++ {
-			middleMan.SendPing(ctx)
-			time.Sleep(time.Second)
-		}
-	}()
+	// go func() {
+	// 	for i := 0; i < 3; i++ {
+	// 		middleMan.SendPing(ctx)
+	// 		time.Sleep(time.Second)
+	// 	}
+	// }()
 
 	// exit by ctrl + c
 	quit := make(chan os.Signal, 1)

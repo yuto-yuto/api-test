@@ -139,7 +139,7 @@ func (m *MiddleMan) Upload(ctx context.Context, filename string) {
 		log.Printf("failed to close: %v\n", err)
 	}
 
-	log.Printf("completed to upload file [%s]\nresult: %t\nwrittenSize: %d\nmessage: %s\n)",
+	log.Printf("completed to upload file [%s]\nresult: %t\nwrittenSize: %d\nmessage: %s\n",
 		filename, res.GetResult(), res.GetWrittenSize(), res.GetMessage())
 }
 
@@ -155,7 +155,7 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 	}
 
 	err = stream.Send(&rpc.CommunicateRequest{
-		Max:   &maxCount,
+		Max:   maxCount,
 		Value: 5,
 	})
 	if err != nil {
@@ -166,11 +166,11 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 	for count := 0; ; count++ {
 		res, err := stream.Recv()
 		if err != nil {
+			common.ShowErrorMessageInTrailer(stream)
 			if errors.Is(err, io.EOF) {
-				common.ShowErrorMessageInTrailer(stream)
 				break
 			}
-
+			
 			log.Printf("[ERROR] failed to receive: %v\n", err)
 			return
 		}
@@ -184,7 +184,7 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				_, err := stream.Recv()
-				log.Printf("[ERROR] failed to receive: %v\n", err)
+				log.Printf("[ERROR] failed to receive 2: %v\n", err)
 				common.ShowErrorMessageInTrailer(stream) // not show anything
 				break
 			}

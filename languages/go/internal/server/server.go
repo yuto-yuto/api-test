@@ -30,8 +30,7 @@ type GrpcCallHandler struct {
 }
 
 func NewGrpcCallHandler() *GrpcCallHandler {
-	return &GrpcCallHandler{
-	}
+	return &GrpcCallHandler{}
 }
 
 func (s *GrpcCallHandler) Ping(ctx context.Context, req *rpc.PingRequest) (*rpc.PingResponse, error) {
@@ -135,23 +134,23 @@ func (s *GrpcCallHandler) Communicate(stream rpc.Middle_CommunicateServer) error
 		return status.Errorf(codes.Unknown, "[ERROR] failed to communicate: %w\n", err)
 	}
 
-	if res.Max == nil {
-		return status.Error(codes.InvalidArgument, "[ERROR] failed to communicate. Max must be specified.")
-	}
 	maxCount := res.GetMax()
+	if maxCount == 0 {
+		maxCount = 3
+	}
 	receivedValue := res.GetValue()
 
 	for currentCount := 0; currentCount < int(maxCount); currentCount++ {
 		randomValue := rand.Intn(100)
+		if randomValue >= 80 {
+			return status.Errorf(codes.Internal, "[ERROR] random value is too big. Value was [%d]", randomValue)
+		}
+
 		sum := receivedValue + int64(randomValue)
 		err = stream.Send(&rpc.CommunicateResponse{
 			CurrentCount: int64(currentCount),
 			Value:        sum,
 		})
-
-		if randomValue >= 80 {
-			return status.Errorf(codes.Internal, "[ERROR] random value is too big. Value was [%d]", randomValue)
-		}
 
 		if err != nil {
 			return status.Errorf(codes.Unknown, "[ERROR] failed to send: %w\n", err)
