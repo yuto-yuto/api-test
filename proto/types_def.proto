@@ -3,23 +3,91 @@ syntax = "proto3";
 option go_package = "pkg/api-test/grpc/apitest";
 
 service TypesDef {
-  rpc VariousDef(VariousDefRequest) returns (VariousDefResponse) {}
+  // rpc VariousDef(VariousDefRequest) returns (VariousDefResponse) {}
+  rpc WithInt64(WithInt64RequestResponse) returns (WithInt64RequestResponse) {}
+  rpc WithOneof(WithOneofRequest) returns (WithOneofResponse) {}
+  rpc WithPrimitive(WithPrimitiveRequest) returns (WithPrimitiveResponse) {}
+  rpc WithOptional(WithOptionalRequest) returns (WithOptionalResponse) {}
+  rpc WithRepeatedInt64(WithRepeatedInt64Request)
+      returns (WithRepeatedInt64Response) {}
+  rpc WithRepeatedStringInt(WithRepeatedStringIntRequest)
+      returns (WithRepeatedStringIntResponse) {}
+  rpc WithMap(WithMapRequest) returns (WithMapResponse) {}
 }
 
-message VariousDefRequest {
-  int64 val_int64 = 1;
+message WithInt64RequestResponse {
+  int64 value = 1;
+}
+
+message WithOneofRequest {
   oneof one_of_value {
-    int64 number = 2;
-    string text = 3;
+    int64 number = 1;
+    string text = 2;
   }
-  PrimitiveType primitive = 4;
-  optional int64 option_value = 5;
-  repeated int64 int_array = 6;
-  repeated StringIntegerValue string_int_array = 7;
-  map<string, int64> map_value = 8;
+  string type = 3;
+}
+message WithOneofResponse {
+  oneof one_of_value {
+    int64 number = 1;
+    string text = 2;
+  }
 }
 
-message VariousDefResponse {}
+message WithPrimitiveRequest {
+  PrimitiveType primitive = 1;
+  string type = 2;
+}
+
+message WithPrimitiveResponse {
+  PrimitiveType primitive = 1;
+}
+
+message WithOptionalRequest {
+  optional int64 option_value = 1;
+  string type = 2;
+}
+message WithOptionalResponse {
+  optional int64 option_value = 1;
+}
+
+message WithRepeatedInt64Request {
+  repeated int64 int_array = 1;
+  string type = 2;
+}
+
+message WithRepeatedInt64Response {
+  repeated int64 int_array = 1;
+}
+
+message WithRepeatedStringIntRequest {
+  repeated StringIntegerValue string_int_array = 1;
+  string type = 2;
+}
+
+message WithRepeatedStringIntResponse {
+  repeated StringIntegerValue string_int_array = 1;
+}
+
+message WithMapRequest {
+  map<string, int64> map_value = 1;
+  string type = 2;
+}
+message WithMapResponse {
+  map<string, int64> map_value = 1;
+}
+
+// message VariousDefResponse {
+//   int64 val_int64 = 1;
+//   oneof one_of_value {
+//     int64 number = 2;
+//     string text = 3;
+//   }
+//   PrimitiveType primitive = 4;
+//   optional int64 option_value = 5;
+//   repeated int64 int_array = 6;
+//   repeated StringIntegerValue string_int_array = 7;
+//   map<string, int64> map_value = 8;
+// }
 
 message PrimitiveType {
   message Value {

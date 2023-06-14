@@ -22,7 +22,14 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TypesDefClient interface {
-	VariousDef(ctx context.Context, in *VariousDefRequest, opts ...grpc.CallOption) (*VariousDefResponse, error)
+	// rpc VariousDef(VariousDefRequest) returns (VariousDefResponse) {}
+	WithInt64(ctx context.Context, in *WithInt64RequestResponse, opts ...grpc.CallOption) (*WithInt64RequestResponse, error)
+	WithOneof(ctx context.Context, in *WithOneofRequest, opts ...grpc.CallOption) (*WithOneofResponse, error)
+	WithPrimitive(ctx context.Context, in *WithPrimitiveRequest, opts ...grpc.CallOption) (*WithPrimitiveResponse, error)
+	WithOptional(ctx context.Context, in *WithOptionalRequest, opts ...grpc.CallOption) (*WithOptionalResponse, error)
+	WithRepeatedInt64(ctx context.Context, in *WithRepeatedInt64Request, opts ...grpc.CallOption) (*WithRepeatedInt64Response, error)
+	WithRepeatedStringInt(ctx context.Context, in *WithRepeatedStringIntRequest, opts ...grpc.CallOption) (*WithRepeatedStringIntResponse, error)
+	WithMap(ctx context.Context, in *WithMapRequest, opts ...grpc.CallOption) (*WithMapResponse, error)
 }
 
 type typesDefClient struct {
@@ -33,9 +40,63 @@ func NewTypesDefClient(cc grpc.ClientConnInterface) TypesDefClient {
 	return &typesDefClient{cc}
 }
 
-func (c *typesDefClient) VariousDef(ctx context.Context, in *VariousDefRequest, opts ...grpc.CallOption) (*VariousDefResponse, error) {
-	out := new(VariousDefResponse)
-	err := c.cc.Invoke(ctx, "/TypesDef/VariousDef", in, out, opts...)
+func (c *typesDefClient) WithInt64(ctx context.Context, in *WithInt64RequestResponse, opts ...grpc.CallOption) (*WithInt64RequestResponse, error) {
+	out := new(WithInt64RequestResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithInt64", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithOneof(ctx context.Context, in *WithOneofRequest, opts ...grpc.CallOption) (*WithOneofResponse, error) {
+	out := new(WithOneofResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithOneof", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithPrimitive(ctx context.Context, in *WithPrimitiveRequest, opts ...grpc.CallOption) (*WithPrimitiveResponse, error) {
+	out := new(WithPrimitiveResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithPrimitive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithOptional(ctx context.Context, in *WithOptionalRequest, opts ...grpc.CallOption) (*WithOptionalResponse, error) {
+	out := new(WithOptionalResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithOptional", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithRepeatedInt64(ctx context.Context, in *WithRepeatedInt64Request, opts ...grpc.CallOption) (*WithRepeatedInt64Response, error) {
+	out := new(WithRepeatedInt64Response)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithRepeatedInt64", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithRepeatedStringInt(ctx context.Context, in *WithRepeatedStringIntRequest, opts ...grpc.CallOption) (*WithRepeatedStringIntResponse, error) {
+	out := new(WithRepeatedStringIntResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithRepeatedStringInt", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *typesDefClient) WithMap(ctx context.Context, in *WithMapRequest, opts ...grpc.CallOption) (*WithMapResponse, error) {
+	out := new(WithMapResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithMap", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +107,14 @@ func (c *typesDefClient) VariousDef(ctx context.Context, in *VariousDefRequest, 
 // All implementations must embed UnimplementedTypesDefServer
 // for forward compatibility
 type TypesDefServer interface {
-	VariousDef(context.Context, *VariousDefRequest) (*VariousDefResponse, error)
+	// rpc VariousDef(VariousDefRequest) returns (VariousDefResponse) {}
+	WithInt64(context.Context, *WithInt64RequestResponse) (*WithInt64RequestResponse, error)
+	WithOneof(context.Context, *WithOneofRequest) (*WithOneofResponse, error)
+	WithPrimitive(context.Context, *WithPrimitiveRequest) (*WithPrimitiveResponse, error)
+	WithOptional(context.Context, *WithOptionalRequest) (*WithOptionalResponse, error)
+	WithRepeatedInt64(context.Context, *WithRepeatedInt64Request) (*WithRepeatedInt64Response, error)
+	WithRepeatedStringInt(context.Context, *WithRepeatedStringIntRequest) (*WithRepeatedStringIntResponse, error)
+	WithMap(context.Context, *WithMapRequest) (*WithMapResponse, error)
 	mustEmbedUnimplementedTypesDefServer()
 }
 
@@ -54,8 +122,26 @@ type TypesDefServer interface {
 type UnimplementedTypesDefServer struct {
 }
 
-func (UnimplementedTypesDefServer) VariousDef(context.Context, *VariousDefRequest) (*VariousDefResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VariousDef not implemented")
+func (UnimplementedTypesDefServer) WithInt64(context.Context, *WithInt64RequestResponse) (*WithInt64RequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithInt64 not implemented")
+}
+func (UnimplementedTypesDefServer) WithOneof(context.Context, *WithOneofRequest) (*WithOneofResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithOneof not implemented")
+}
+func (UnimplementedTypesDefServer) WithPrimitive(context.Context, *WithPrimitiveRequest) (*WithPrimitiveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithPrimitive not implemented")
+}
+func (UnimplementedTypesDefServer) WithOptional(context.Context, *WithOptionalRequest) (*WithOptionalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithOptional not implemented")
+}
+func (UnimplementedTypesDefServer) WithRepeatedInt64(context.Context, *WithRepeatedInt64Request) (*WithRepeatedInt64Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithRepeatedInt64 not implemented")
+}
+func (UnimplementedTypesDefServer) WithRepeatedStringInt(context.Context, *WithRepeatedStringIntRequest) (*WithRepeatedStringIntResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithRepeatedStringInt not implemented")
+}
+func (UnimplementedTypesDefServer) WithMap(context.Context, *WithMapRequest) (*WithMapResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithMap not implemented")
 }
 func (UnimplementedTypesDefServer) mustEmbedUnimplementedTypesDefServer() {}
 
@@ -70,20 +156,128 @@ func RegisterTypesDefServer(s grpc.ServiceRegistrar, srv TypesDefServer) {
 	s.RegisterService(&TypesDef_ServiceDesc, srv)
 }
 
-func _TypesDef_VariousDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VariousDefRequest)
+func _TypesDef_WithInt64_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithInt64RequestResponse)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TypesDefServer).VariousDef(ctx, in)
+		return srv.(TypesDefServer).WithInt64(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/TypesDef/VariousDef",
+		FullMethod: "/TypesDef/WithInt64",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypesDefServer).VariousDef(ctx, req.(*VariousDefRequest))
+		return srv.(TypesDefServer).WithInt64(ctx, req.(*WithInt64RequestResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithOneof_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithOneofRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithOneof(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithOneof",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithOneof(ctx, req.(*WithOneofRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithPrimitive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithPrimitiveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithPrimitive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithPrimitive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithPrimitive(ctx, req.(*WithPrimitiveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithOptional_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithOptionalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithOptional(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithOptional",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithOptional(ctx, req.(*WithOptionalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithRepeatedInt64_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithRepeatedInt64Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithRepeatedInt64(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithRepeatedInt64",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithRepeatedInt64(ctx, req.(*WithRepeatedInt64Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithRepeatedStringInt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithRepeatedStringIntRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithRepeatedStringInt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithRepeatedStringInt",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithRepeatedStringInt(ctx, req.(*WithRepeatedStringIntRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TypesDef_WithMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithMapRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithMap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithMap",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithMap(ctx, req.(*WithMapRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +290,32 @@ var TypesDef_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TypesDefServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "VariousDef",
-			Handler:    _TypesDef_VariousDef_Handler,
+			MethodName: "WithInt64",
+			Handler:    _TypesDef_WithInt64_Handler,
+		},
+		{
+			MethodName: "WithOneof",
+			Handler:    _TypesDef_WithOneof_Handler,
+		},
+		{
+			MethodName: "WithPrimitive",
+			Handler:    _TypesDef_WithPrimitive_Handler,
+		},
+		{
+			MethodName: "WithOptional",
+			Handler:    _TypesDef_WithOptional_Handler,
+		},
+		{
+			MethodName: "WithRepeatedInt64",
+			Handler:    _TypesDef_WithRepeatedInt64_Handler,
+		},
+		{
+			MethodName: "WithRepeatedStringInt",
+			Handler:    _TypesDef_WithRepeatedStringInt_Handler,
+		},
+		{
+			MethodName: "WithMap",
+			Handler:    _TypesDef_WithMap_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

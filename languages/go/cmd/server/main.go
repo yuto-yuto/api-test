@@ -22,6 +22,7 @@ func main() {
 	server := grpc.NewServer()
 
 	rpc.RegisterMiddleServer(server, pb.NewGrpcCallHandler())
+	rpc.RegisterTypesDefServer(server, pb.NewGrpcTypeDefHandler())
 
 	go func() {
 		log.Println("start gRPC server")
