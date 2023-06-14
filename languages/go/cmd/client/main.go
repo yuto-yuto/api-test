@@ -34,10 +34,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-
 	defer grpcConn.Close()
 
-	middleMan := client.NewMiddleMan(grpcConn)
+	// runMiddleFuncs(grpcConn)
+	runTypesDefFuncs(grpcConn)
+
+	// exit by ctrl + c
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	log.Println("exit")
+}
+
+func runMiddleFuncs(conn *grpc.ClientConn) {
+	middleMan := client.NewMiddleMan(conn)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -50,16 +60,22 @@ func main() {
 
 	middleMan.Communicate(ctx, 4)
 
-	// go func() {
-	// 	for i := 0; i < 3; i++ {
-	// 		middleMan.SendPing(ctx)
-	// 		time.Sleep(time.Second)
-	// 	}
-	// }()
+	go func() {
+		for i := 0; i < 3; i++ {
+			middleMan.SendPing(ctx)
+			time.Sleep(time.Second)
+		}
+	}()
+}
 
-	// exit by ctrl + c
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
-	<-quit
-	log.Println("exit")
+func runTypesDefFuncs(conn *grpc.ClientConn) {
+	middleMan := client.NewMiddleMan(conn)
+
+	// middleMan.WithInt64()
+	// middleMan.WithOneof()
+	// middleMan.WithPrimitive()
+	// middleMan.WithOptional()
+	middleMan.WithRepeatedInt64()
+	// middleMan.WithRepeatedStringInt()
+	// middleMan.WithMap()
 }

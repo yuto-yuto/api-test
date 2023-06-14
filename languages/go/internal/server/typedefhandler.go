@@ -19,15 +19,16 @@ func NewGrpcTypeDefHandler() *GrpcTypeDefHandler {
 }
 
 func (s GrpcTypeDefHandler) WithInt64(ctx context.Context, req *rpc.WithInt64RequestResponse) (*rpc.WithInt64RequestResponse, error) {
-	fmt.Printf("int64: %v", req.GetValue())
+	fmt.Printf("int64: %v\n", req.GetValue())
 	return &rpc.WithInt64RequestResponse{Value: int64(1)}, nil
 }
 
 func (s GrpcTypeDefHandler) WithOneof(ctx context.Context, req *rpc.WithOneofRequest) (*rpc.WithOneofResponse, error) {
-	fmt.Printf("oneof is nil: %v", req.OneOfValue == nil)
-	fmt.Printf("oneof: %v", req.GetOneOfValue())
-	fmt.Printf("oneof number: %v", req.GetNumber())
-	fmt.Printf("oneof text: %v", req.GetText())
+	fmt.Println("---------------")
+	fmt.Printf("oneof is nil: %v\n", req.OneOfValue == nil)
+	fmt.Printf("oneof: %v\n", req.GetOneOfValue())
+	fmt.Printf("oneof number: %v\n", req.GetNumber())
+	fmt.Printf("oneof text: %v\n", req.GetText())
 
 	switch req.GetType() {
 	case "int64":
@@ -42,14 +43,15 @@ func (s GrpcTypeDefHandler) WithOneof(ctx context.Context, req *rpc.WithOneofReq
 }
 
 func (s GrpcTypeDefHandler) WithPrimitive(ctx context.Context, req *rpc.WithPrimitiveRequest) (*rpc.WithPrimitiveResponse, error) {
-	fmt.Printf("Primitive is nil: %v", req.Primitive == nil)
-	fmt.Printf("Primitive value: %v", req.GetPrimitive().GetValue())
-	fmt.Printf("Primitive Text: %v", req.GetPrimitive().GetValue().GetText())
-	fmt.Printf("Primitive DoubleValue: %v", req.GetPrimitive().GetValue().GetDoubleValue())
-	fmt.Printf("Primitive Int64Value: %v", req.GetPrimitive().GetValue().GetInt64Value())
-	fmt.Printf("Primitive Uint64Value: %v", req.GetPrimitive().GetValue().GetUint64Value())
-	fmt.Printf("Primitive Boolean: %v", req.GetPrimitive().GetValue().GetBoolean())
-	fmt.Printf("Primitive RawBytes: %v", req.GetPrimitive().GetValue().GetRawBytes())
+	fmt.Println("---------------")
+	fmt.Printf("Primitive is nil: %v\n", req.Primitive == nil)
+	fmt.Printf("Primitive value: %v\n", req.GetPrimitive().GetValue())
+	fmt.Printf("Primitive Text: %v\n", req.GetPrimitive().GetValue().GetText())
+	fmt.Printf("Primitive DoubleValue: %v\n", req.GetPrimitive().GetValue().GetDoubleValue())
+	fmt.Printf("Primitive Int64Value: %v\n", req.GetPrimitive().GetValue().GetInt64Value())
+	fmt.Printf("Primitive Uint64Value: %v\n", req.GetPrimitive().GetValue().GetUint64Value())
+	fmt.Printf("Primitive Boolean: %v\n", req.GetPrimitive().GetValue().GetBoolean())
+	fmt.Printf("Primitive RawBytes: %v\n", req.GetPrimitive().GetValue().GetRawBytes())
 
 	switch req.GetType() {
 	case "string":
@@ -76,8 +78,9 @@ func (s GrpcTypeDefHandler) WithPrimitive(ctx context.Context, req *rpc.WithPrim
 }
 
 func (s GrpcTypeDefHandler) WithOptional(ctx context.Context, req *rpc.WithOptionalRequest) (*rpc.WithOptionalResponse, error) {
-	fmt.Printf("Optional is nil: %v", req.OptionValue == nil)
-	fmt.Printf("Optional: %v", req.GetOptionValue())
+	fmt.Println("---------------")
+	fmt.Printf("Optional is nil: %v\n", req.OptionValue == nil)
+	fmt.Printf("Optional: %v\n", req.GetOptionValue())
 
 	switch req.GetType() {
 	case "nil":
@@ -89,8 +92,9 @@ func (s GrpcTypeDefHandler) WithOptional(ctx context.Context, req *rpc.WithOptio
 }
 
 func (s GrpcTypeDefHandler) WithRepeatedInt64(ctx context.Context, req *rpc.WithRepeatedInt64Request) (*rpc.WithRepeatedInt64Response, error) {
-	fmt.Printf("Repeated is nil: %v", req.GetIntArray() == nil)
-	fmt.Printf("Repeated: %v", req.GetIntArray())
+	fmt.Println("---------------")
+	fmt.Printf("Repeated is nil: %v\n", req.GetIntArray() == nil)
+	fmt.Printf("Repeated: %v\n", req.GetIntArray())
 
 	switch req.GetType() {
 	case "nil1":
@@ -105,8 +109,9 @@ func (s GrpcTypeDefHandler) WithRepeatedInt64(ctx context.Context, req *rpc.With
 }
 
 func (s GrpcTypeDefHandler) WithRepeatedStringInt(ctx context.Context, req *rpc.WithRepeatedStringIntRequest) (*rpc.WithRepeatedStringIntResponse, error) {
-	fmt.Printf("RepeatedStringInt is nil: %v", req.GetStringIntArray() == nil)
-	fmt.Printf("RepeatedStringInt: %v", req.GetStringIntArray())
+	fmt.Println("---------------")
+	fmt.Printf("RepeatedStringInt is nil: %v\n", req.GetStringIntArray() == nil)
+	fmt.Printf("RepeatedStringInt: %v\n", req.GetStringIntArray())
 
 	switch req.GetType() {
 	case "nil1":
@@ -138,8 +143,9 @@ func (s GrpcTypeDefHandler) WithRepeatedStringInt(ctx context.Context, req *rpc.
 }
 
 func (s GrpcTypeDefHandler) WithMap(ctx context.Context, req *rpc.WithMapRequest) (*rpc.WithMapResponse, error) {
-	fmt.Printf("Map is nil: %v", req.GetMapValue() == nil)
-	fmt.Printf("Map: %v", req.GetMapValue())
+	fmt.Println("---------------")
+	fmt.Printf("Map is nil: %v\n", req.GetMapValue() == nil)
+	fmt.Printf("Map: %v\n", req.GetMapValue())
 
 	switch req.GetType() {
 	case "nil1":
