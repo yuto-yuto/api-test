@@ -171,7 +171,7 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 			if errors.Is(err, io.EOF) {
 				break
 			}
-			
+
 			log.Printf("[ERROR] failed to receive: %v\n", err)
 			return
 		}
@@ -406,7 +406,7 @@ func (m *MiddleMan) WithMap() {
 	fmt.Printf("WithMap_1 is nil: %v\n", res1.MapValue == nil)
 	fmt.Printf("WithMap_1: %v\n", res1.GetMapValue())
 
-	req2 := &rpc.WithMapRequest{MapValue: nil, Type: ""}
+	req2 := &rpc.WithMapRequest{MapValue: map[string]int64{"foo": 11, "bar": 22}, Type: ""}
 	res2, _ := client.WithMap(ctx, req2)
 	fmt.Printf("WithMap_2 is nil: %v\n", res2.MapValue == nil)
 	fmt.Printf("WithMap_2: %v\n", res2.GetMapValue())
