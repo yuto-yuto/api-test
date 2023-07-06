@@ -1,7 +1,7 @@
 .PHONY: generate runServer runClient lint
 
 generate:
-	@protoc --dart_out=./src/proto \
+	@protoc --dart_out=./lib/proto \
 	--proto_path=../../proto \
  	-Iprotos middle.proto types_def.proto
 
