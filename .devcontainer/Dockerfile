@@ -16,3 +16,15 @@ RUN go install mvdan.cc/gofumpt@v0.5.0 && \
     go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28 && \
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2 && \
     export PATH="$PATH:$(go env GOPATH)/bin"
+
+# Install for Dart
+RUN sudo apt update && \
+    sudo apt install apt-transport-https && \
+    wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/dart.gpg && \
+    echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' | sudo tee /etc/apt/sources.list.d/dart_stable.list && \
+    sudo apt update && \
+    sudo apt install dart && \
+    # Install proto for Dart
+    dart pub global activate protoc_plugin
+    
+ENV PATH="$PATH:/home/vscode/.pub-cache/bin"
