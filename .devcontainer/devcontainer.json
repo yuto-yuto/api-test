@@ -26,18 +26,21 @@
 					"toolsManagement.checkForUpdates": "local",
 					"useLanguageServer": true,
 					"gopath": "/go",
-                    "lintTool": "golangci-lint",
-                    "lintFlags": ["--fast"]
+					"lintTool": "golangci-lint",
+					"lintFlags": [
+						"--fast"
+					]
 				},
-                "gopls": {
-                    "formatting.gofumpt": true
-                }
+				"gopls": {
+					"formatting.gofumpt": true
+				}
 			},
 			"extensions": [
 				"zxh404.vscode-proto3",
 				"golang.go",
 				"ms-vscode.makefile-tools",
-				"xaver.clang-format"
+				"xaver.clang-format",
+				"dart-code.dart-code"
 			]
 		}
 	}
