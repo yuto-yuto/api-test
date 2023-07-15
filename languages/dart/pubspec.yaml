@@ -8,7 +8,9 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  fixnum: ^1.1.0
   grpc: ^3.2.2
+  path: ^1.8.3
   protobuf: ^3.0.0
   # path: ^1.8.0
 

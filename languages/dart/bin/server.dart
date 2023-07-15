@@ -4,9 +4,13 @@ import 'package:dart_grpc/server/middle.dart';
 import 'package:grpc/grpc.dart';
 
 Future<void> main(List<String> arguments) async {
-  final udsAddress =
-      InternetAddress('localhost', type: InternetAddressType.unix);
-  final server = Server.create(services: [MiddleService()]);
-  await server.serve(address: udsAddress);
-  print('Start UNIX Server @localhost...');
+  final server = Server.create(
+    services: [MiddleService()],
+    codecRegistry: CodecRegistry(codecs: const [
+      GzipCodec(),
+      IdentityCodec(),
+    ]),
+  );
+  await server.serve(port: 50051);
+  print('Server listening on port ${server.port}...');
 }

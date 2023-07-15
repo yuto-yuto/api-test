@@ -15,10 +15,10 @@ generate2:
 	google/protobuf/timestamp.proto 
 
 runServer:
-	@go run ./cmd/server/main.go
+	@dart  ./bin/server.dart
 
 runClient:
-	@go run ./cmd/client/main.go
+	@dart  ./bin/client.dart
 
 lint:
-	@golangci-lint run
+	@dart analyze
