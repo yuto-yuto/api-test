@@ -10,6 +10,6 @@ Future<void> main(List<String> arguments) async {
       IdentityCodec(),
     ]),
   );
-  await server.serve(port: 50051);
+  await server.serve(port: 8080);
   print('Server listening on port ${server.port}...');
 }

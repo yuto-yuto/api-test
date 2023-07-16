@@ -36,8 +36,8 @@ func main() {
 	}
 	defer grpcConn.Close()
 
-	// runMiddleFuncs(grpcConn)
-	runTypesDefFuncs(grpcConn)
+	runMiddleFuncs(grpcConn)
+	// runTypesDefFuncs(grpcConn)
 
 	// exit by ctrl + c
 	quit := make(chan os.Signal, 1)
