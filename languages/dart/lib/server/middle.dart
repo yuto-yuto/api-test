@@ -60,7 +60,7 @@ class MiddleService extends rpc.MiddleServiceBase {
       await for (final req in request) {
         writtenSize += req.chunk.length;
         final line = utf8.decode(req.chunk);
-        print("received(${++count}):${req.filename}, ${line}");
+        print("received(${++count}):${req.filename}, $line");
         content.add(line);
       }
 

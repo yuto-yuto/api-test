@@ -86,7 +86,7 @@ class MiddleServiceHandler {
       );
 
       print("upload completed\n");
-      print("response: {${response}}");
+      print("response: {$response}");
     } catch (e) {
       print("caught an error: $e");
     }
