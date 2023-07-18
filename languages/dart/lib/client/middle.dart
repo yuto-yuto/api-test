@@ -20,8 +20,6 @@ class MiddleServiceHandler {
     try {
       final request = rpc.PingRequest();
       final response = await client.ping(request);
-      final ms = response.timestamp.seconds * 1000 +
-          (response.timestamp.nanos / 1000).round();
       print("timestamp: ${TimestampParser.from(response.timestamp)}");
     } catch (e) {
       print("caught an error: $e");
