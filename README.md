@@ -2,7 +2,7 @@
 
 A repository to test gRPC. This repository can be developed in devcontainer.
 
-## How to test in Golang
+## How to test
 
 After opening devcontainer, Change the current directory first.
 
