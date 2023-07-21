@@ -37,13 +37,13 @@ class MiddleServiceHandler {
     }
   }
 
-  Future<void> download() async {
+  Future<void> download(String filename, int timeoutMs) async {
     print("--- download ---");
     try {
-      final request = rpc.DownloadRequest()..filename = "test_file.txt";
+      final request = rpc.DownloadRequest()..filename = filename;
       final responses = client.download(
         request,
-        options: CallOptions(timeout: Duration(seconds: 1)),
+        options: CallOptions(timeout: Duration(milliseconds: timeoutMs)),
       );
 
       var count = 0;
@@ -54,6 +54,8 @@ class MiddleServiceHandler {
       }
       print("download completed");
       print("content: $lines");
+    } on GrpcError catch (e) {
+      print("caught an GrpcError: $e");
     } catch (e) {
       print("caught an error: $e");
     }

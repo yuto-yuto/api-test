@@ -19,7 +19,10 @@ Future<void> main(List<String> arguments) async {
 
   await handler.ping();
   await handler.sayHello();
-  await handler.download();
+  await handler.download("test_file.txt", 500);
+  await handler.download("error", 1000);
+  await handler.download("unknown_file.txt", 1000);
+  await handler.download("test_file.txt", 1000);
   await handler.upload();
   await handler.communicate();
 

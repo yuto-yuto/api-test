@@ -31,6 +31,15 @@ class MiddleService extends rpc.MiddleServiceBase {
   Stream<rpc.DownloadResponse> download(
       ServiceCall call, rpc.DownloadRequest request) async* {
     try {
+      if (request.filename == "error") {
+        call.sendTrailers(
+          status: StatusCode.invalidArgument,
+          message: "error file can't be specified",
+        );
+        return;
+      }
+
+      await Future.delayed(Duration(milliseconds: 500));
       final absPath = p.join(resourcePath, request.filename);
       final file = File(absPath);
       final lines = file
@@ -38,12 +47,19 @@ class MiddleService extends rpc.MiddleServiceBase {
           .transform(utf8.decoder)
           .transform(LineSplitter());
 
+      print("lines for loop");
       await for (final line in lines) {
         yield rpc.DownloadResponse()..line = line;
       }
       print("download process completed");
+    } on GrpcError catch (e) {
+      print("caught an GrpcError in download: $e");
     } catch (e) {
       print("caught an error in download: $e");
+    } finally {
+      if (call.isCanceled) {
+        print("download was cancelled");
+      }
     }
   }
 
