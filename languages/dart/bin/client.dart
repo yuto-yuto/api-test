@@ -17,14 +17,16 @@ Future<void> main(List<String> arguments) async {
   final client = MiddleClient(channel);
   final handler = MiddleServiceHandler(client);
 
-  await handler.ping();
-  await handler.sayHello();
-  await handler.download("test_file.txt", 500);
-  await handler.download("error", 1000);
-  await handler.download("unknown_file.txt", 1000);
-  await handler.download("test_file.txt", 1000);
-  await handler.upload();
-  await handler.communicate();
+  // await handler.ping();
+  // await handler.sayHello();
+  // await handler.download("test_file.txt", 500);
+  // await handler.download("error", 1000);
+  // await handler.download("unknown_file.txt", 1000);
+  // await handler.download("test_file.txt", 1000);
+  await handler.upload("error", 500);
+  await handler.upload("data.txt", 100);
+  await handler.upload("data.txt", 10000);
+  // await handler.communicate();
 
   await channel.shutdown();
 }

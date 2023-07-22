@@ -61,7 +61,7 @@ class MiddleServiceHandler {
     }
   }
 
-  Future<void> upload() async {
+  Future<void> upload(String filename, int timeoutMs) async {
     Stream<rpc.UploadRequest> readFile() async* {
       final absPath = p.join(resourcePath, "data.txt");
       final file = File(absPath);
@@ -73,7 +73,9 @@ class MiddleServiceHandler {
 
       await for (final lineBytes in lines) {
         final request = rpc.UploadRequest();
+        request.filename = filename;
         request.chunk = lineBytes;
+        Future.delayed(Duration(milliseconds: 300));
         yield request;
       }
     }
@@ -82,11 +84,13 @@ class MiddleServiceHandler {
     try {
       final response = await client.upload(
         readFile(),
-        options: CallOptions(timeout: Duration(seconds: 1)),
+        options: CallOptions(timeout: Duration(milliseconds: timeoutMs)),
       );
 
       print("upload completed\n");
       print("response: {$response}");
+    } on GrpcError catch (e) {
+      print("caught an GrpcError: $e");
     } catch (e) {
       print("caught an error: $e");
     }

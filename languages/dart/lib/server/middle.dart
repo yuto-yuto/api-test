@@ -68,12 +68,18 @@ class MiddleService extends rpc.MiddleServiceBase {
       ServiceCall call, Stream<rpc.UploadRequest> request) async {
     var writtenSize = 0;
 
-    print("upload was triggered");
+    print("--- upload was triggered ---");
 
     try {
       var count = 0;
       var content = [];
       await for (final req in request) {
+        if (req.filename == "error") {
+          throw ArgumentError("filename must not be 'error'");
+        }
+
+        await Future.delayed(Duration(milliseconds: 100));
+
         writtenSize += req.chunk.length;
         final line = utf8.decode(req.chunk);
         print("received(${++count}):${req.filename}, $line");
@@ -88,15 +94,27 @@ class MiddleService extends rpc.MiddleServiceBase {
       response.writtenSize = $fixnum.Int64(writtenSize);
       response.result = true;
       return response;
+    } on GrpcError catch (e) {
+      print("caught an GrpcError in upload: $e");
+    } on ArgumentError catch (e) {
+      print("caught an ArgumentError. Set trailers");
+      call.sendTrailers(
+        status: StatusCode.invalidArgument,
+        message: e.message,
+      );
     } catch (e) {
-      print("caught an error in download: $e");
-
-      final response = rpc.UploadResponse();
-      response.message = "FAILED";
-      response.writtenSize = $fixnum.Int64(writtenSize);
-      response.result = false;
-      return response;
+      print("caught an error in upload: $e");
+    } finally {
+      if (call.isCanceled) {
+        print("upload canceled");
+      }
     }
+
+    final response = rpc.UploadResponse();
+    response.message = "FAILED";
+    response.writtenSize = $fixnum.Int64(writtenSize);
+    response.result = false;
+    return response;
   }
 
   @override
