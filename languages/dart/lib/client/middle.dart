@@ -103,12 +103,7 @@ class MiddleServiceHandler {
       final requestStream = StreamController<rpc.CommunicateRequest>();
 
       final response = client.communicate(
-        requestStream.stream.map((value) {
-          final req = rpc.CommunicateRequest();
-          req.max = $fixnum.Int64(5);
-          req.value = currentValue + value.value;
-          return req;
-        }),
+        requestStream.stream.map((request) => request),
         options: CallOptions(timeout: Duration(seconds: 3)),
       );
 
@@ -121,9 +116,12 @@ class MiddleServiceHandler {
       try {
         await for (final res in response) {
           print("received(${++count}): ${res.value}");
+          final randomValue = Random().nextInt(10);
+          if (randomValue > 8) {
+            throw Exception("generated random value was bigger than 8");
+          }
           final req = rpc.CommunicateRequest();
           currentValue = res.value;
-          final randomValue = Random().nextInt(10);
           req.value = currentValue + randomValue;
           requestStream.add(req);
         }
@@ -134,6 +132,8 @@ class MiddleServiceHandler {
       }
 
       print("communicate completed\n");
+    } on GrpcError catch (e) {
+      print("caught an GrpcError: $e");
     } catch (e) {
       print("caught an error: $e");
     }

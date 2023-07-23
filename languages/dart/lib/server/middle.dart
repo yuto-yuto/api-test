@@ -124,11 +124,11 @@ class MiddleService extends rpc.MiddleServiceBase {
     var maxCount = 0;
     var currentCount = 0;
 
-    print("communicate was triggered");
+    print("--- communicate was triggered ---");
 
     try {
       await for (final req in request) {
-        print(req);
+        // print(req);
         if (isFirst) {
           isFirst = false;
           maxCount = req.max.toInt();
@@ -147,6 +147,7 @@ class MiddleService extends rpc.MiddleServiceBase {
         if (randomValue >= 80) {
           throw Exception("generated random value was bigger than 80");
         }
+        print("generated($currentCount): $randomValue");
 
         final sum = req.value + randomValue;
         final response = rpc.CommunicateResponse();
@@ -154,8 +155,11 @@ class MiddleService extends rpc.MiddleServiceBase {
         response.value = sum;
         yield response;
       }
+    } on GrpcError catch (e) {
+      print("caught an GrpcError in upload: $e");
     } catch (e) {
       print("caught an error in communicate: $e");
+      call.sendTrailers(status: StatusCode.aborted, message: e.toString());
 
       rethrow;
     } finally {
