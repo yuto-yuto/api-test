@@ -14,6 +14,10 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import 'types_def.pbenum.dart';
+
+export 'types_def.pbenum.dart';
+
 class WithInt64RequestResponse extends $pb.GeneratedMessage {
   factory WithInt64RequestResponse() => create();
   WithInt64RequestResponse._() : super();
@@ -862,6 +866,48 @@ class StringIntegerValue extends $pb.GeneratedMessage {
   $core.bool hasNumber() => $_has(1);
   @$pb.TagNumber(2)
   void clearNumber() => clearField(2);
+}
+
+class WithEnumRequestResponse extends $pb.GeneratedMessage {
+  factory WithEnumRequestResponse() => create();
+  WithEnumRequestResponse._() : super();
+  factory WithEnumRequestResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory WithEnumRequestResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'WithEnumRequestResponse', createEmptyInstance: create)
+    ..e<DeviceState>(1, _omitFieldNames ? '' : 'state', $pb.PbFieldType.OE, defaultOrMaker: DeviceState.DEVICE_STATE_UNSPECIFIED, valueOf: DeviceState.valueOf, enumValues: DeviceState.values)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  WithEnumRequestResponse clone() => WithEnumRequestResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  WithEnumRequestResponse copyWith(void Function(WithEnumRequestResponse) updates) => super.copyWith((message) => updates(message as WithEnumRequestResponse)) as WithEnumRequestResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static WithEnumRequestResponse create() => WithEnumRequestResponse._();
+  WithEnumRequestResponse createEmptyInstance() => create();
+  static $pb.PbList<WithEnumRequestResponse> createRepeated() => $pb.PbList<WithEnumRequestResponse>();
+  @$core.pragma('dart2js:noInline')
+  static WithEnumRequestResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<WithEnumRequestResponse>(create);
+  static WithEnumRequestResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  DeviceState get state => $_getN(0);
+  @$pb.TagNumber(1)
+  set state(DeviceState v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasState() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearState() => clearField(1);
 }
 
 

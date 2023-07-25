@@ -13,6 +13,26 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
+@$core.Deprecated('Use deviceStateDescriptor instead')
+const DeviceState$json = {
+  '1': 'DeviceState',
+  '2': [
+    {'1': 'DEVICE_STATE_UNSPECIFIED', '2': 0},
+    {'1': 'DEVICE_STATE_READY', '2': 1},
+    {'1': 'DEVICE_STATE_RUNNING', '2': 2},
+    {'1': 'DEVICE_STATE_STOP', '2': 3},
+    {'1': 'DEVICE_STATE_ABORTED', '2': 4},
+    {'1': 'DEVICE_STATE_COMPLETED', '2': 5},
+  ],
+};
+
+/// Descriptor for `DeviceState`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List deviceStateDescriptor = $convert.base64Decode(
+    'CgtEZXZpY2VTdGF0ZRIcChhERVZJQ0VfU1RBVEVfVU5TUEVDSUZJRUQQABIWChJERVZJQ0VfU1'
+    'RBVEVfUkVBRFkQARIYChRERVZJQ0VfU1RBVEVfUlVOTklORxACEhUKEURFVklDRV9TVEFURV9T'
+    'VE9QEAMSGAoUREVWSUNFX1NUQVRFX0FCT1JURUQQBBIaChZERVZJQ0VfU1RBVEVfQ09NUExFVE'
+    'VEEAU=');
+
 @$core.Deprecated('Use withInt64RequestResponseDescriptor instead')
 const WithInt64RequestResponse$json = {
   '1': 'WithInt64RequestResponse',
@@ -275,4 +295,17 @@ const StringIntegerValue$json = {
 final $typed_data.Uint8List stringIntegerValueDescriptor = $convert.base64Decode(
     'ChJTdHJpbmdJbnRlZ2VyVmFsdWUSFAoEdGV4dBgBIAEoCUgAUgR0ZXh0EhgKBm51bWJlchgCIA'
     'EoA0gAUgZudW1iZXJCBwoFdmFsdWU=');
+
+@$core.Deprecated('Use withEnumRequestResponseDescriptor instead')
+const WithEnumRequestResponse$json = {
+  '1': 'WithEnumRequestResponse',
+  '2': [
+    {'1': 'state', '3': 1, '4': 1, '5': 14, '6': '.DeviceState', '10': 'state'},
+  ],
+};
+
+/// Descriptor for `WithEnumRequestResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List withEnumRequestResponseDescriptor = $convert.base64Decode(
+    'ChdXaXRoRW51bVJlcXVlc3RSZXNwb25zZRIiCgVzdGF0ZRgBIAEoDjIMLkRldmljZVN0YXRlUg'
+    'VzdGF0ZQ==');
 

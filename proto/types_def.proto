@@ -13,6 +13,7 @@ service TypesDef {
   rpc WithRepeatedStringInt(WithRepeatedStringIntRequest)
       returns (WithRepeatedStringIntResponse) {}
   rpc WithMap(WithMapRequest) returns (WithMapResponse) {}
+  rpc WithEnum(WithEnumRequestResponse) returns (WithEnumRequestResponse) {}
 }
 
 message WithInt64RequestResponse {
@@ -76,19 +77,6 @@ message WithMapResponse {
   map<string, int64> map_value = 1;
 }
 
-// message VariousDefResponse {
-//   int64 val_int64 = 1;
-//   oneof one_of_value {
-//     int64 number = 2;
-//     string text = 3;
-//   }
-//   PrimitiveType primitive = 4;
-//   optional int64 option_value = 5;
-//   repeated int64 int_array = 6;
-//   repeated StringIntegerValue string_int_array = 7;
-//   map<string, int64> map_value = 8;
-// }
-
 message PrimitiveType {
   message Value {
     oneof element {
@@ -108,4 +96,17 @@ message StringIntegerValue {
     string text = 1;
     int64 number = 2;
   }
+}
+
+enum DeviceState {
+  DEVICE_STATE_UNSP = 0;
+  DEVICE_STATE_READY = 1;
+  DEVICE_STATE_RUNNING = 2;
+  DEVICE_STATE_STOP = 3;
+  DEVICE_STATE_ABORTED = 4;
+  DEVICE_STATE_COMPLETED = 5;
+}
+
+message WithEnumRequestResponse {
+  DeviceState state = 1;
 }

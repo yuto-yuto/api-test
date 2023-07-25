@@ -49,6 +49,10 @@ class TypesDefClient extends $grpc.Client {
       '/TypesDef/WithMap',
       ($1.WithMapRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.WithMapResponse.fromBuffer(value));
+  static final _$withEnum = $grpc.ClientMethod<$1.WithEnumRequestResponse, $1.WithEnumRequestResponse>(
+      '/TypesDef/WithEnum',
+      ($1.WithEnumRequestResponse value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $1.WithEnumRequestResponse.fromBuffer(value));
 
   TypesDefClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -82,6 +86,10 @@ class TypesDefClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$1.WithMapResponse> withMap($1.WithMapRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$withMap, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$1.WithEnumRequestResponse> withEnum($1.WithEnumRequestResponse request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$withEnum, request, options: options);
   }
 }
 
@@ -139,6 +147,13 @@ abstract class TypesDefServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.WithMapRequest.fromBuffer(value),
         ($1.WithMapResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$1.WithEnumRequestResponse, $1.WithEnumRequestResponse>(
+        'WithEnum',
+        withEnum_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $1.WithEnumRequestResponse.fromBuffer(value),
+        ($1.WithEnumRequestResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.WithInt64RequestResponse> withInt64_Pre($grpc.ServiceCall call, $async.Future<$1.WithInt64RequestResponse> request) async {
@@ -169,6 +184,10 @@ abstract class TypesDefServiceBase extends $grpc.Service {
     return withMap(call, await request);
   }
 
+  $async.Future<$1.WithEnumRequestResponse> withEnum_Pre($grpc.ServiceCall call, $async.Future<$1.WithEnumRequestResponse> request) async {
+    return withEnum(call, await request);
+  }
+
   $async.Future<$1.WithInt64RequestResponse> withInt64($grpc.ServiceCall call, $1.WithInt64RequestResponse request);
   $async.Future<$1.WithOneofResponse> withOneof($grpc.ServiceCall call, $1.WithOneofRequest request);
   $async.Future<$1.WithPrimitiveResponse> withPrimitive($grpc.ServiceCall call, $1.WithPrimitiveRequest request);
@@ -176,4 +195,5 @@ abstract class TypesDefServiceBase extends $grpc.Service {
   $async.Future<$1.WithRepeatedInt64Response> withRepeatedInt64($grpc.ServiceCall call, $1.WithRepeatedInt64Request request);
   $async.Future<$1.WithRepeatedStringIntResponse> withRepeatedStringInt($grpc.ServiceCall call, $1.WithRepeatedStringIntRequest request);
   $async.Future<$1.WithMapResponse> withMap($grpc.ServiceCall call, $1.WithMapRequest request);
+  $async.Future<$1.WithEnumRequestResponse> withEnum($grpc.ServiceCall call, $1.WithEnumRequestResponse request);
 }
