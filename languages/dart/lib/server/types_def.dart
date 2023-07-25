@@ -158,4 +158,10 @@ class TypesDefService extends rpc.TypesDefServiceBase {
 
     return response;
   }
+  
+  @override
+  Future<WithEnumRequestResponse> withEnum(ServiceCall call, WithEnumRequestResponse request) {
+    // TODO: implement withEnum
+    throw UnimplementedError();
+  }
 }
