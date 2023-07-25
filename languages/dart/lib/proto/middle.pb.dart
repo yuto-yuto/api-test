@@ -9,13 +9,12 @@
 // ignore_for_file: non_constant_identifier_names, prefer_final_fields
 // ignore_for_file: unnecessary_import, unnecessary_this, unused_import
 
-import 'dart:async' as $async;
 import 'dart:core' as $core;
 
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'google/protobuf/timestamp.pb.dart' as $0;
+import 'google/protobuf/timestamp.pb.dart' as $2;
 
 export 'middle.pbenum.dart';
 
@@ -142,7 +141,7 @@ class PingResponse extends $pb.GeneratedMessage {
   factory PingResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'PingResponse', createEmptyInstance: create)
-    ..aOM<$0.Timestamp>(1, _omitFieldNames ? '' : 'timestamp', subBuilder: $0.Timestamp.create)
+    ..aOM<$2.Timestamp>(1, _omitFieldNames ? '' : 'timestamp', subBuilder: $2.Timestamp.create)
     ..hasRequiredFields = false
   ;
 
@@ -168,15 +167,15 @@ class PingResponse extends $pb.GeneratedMessage {
   static PingResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $0.Timestamp get timestamp => $_getN(0);
+  $2.Timestamp get timestamp => $_getN(0);
   @$pb.TagNumber(1)
-  set timestamp($0.Timestamp v) { setField(1, v); }
+  set timestamp($2.Timestamp v) { setField(1, v); }
   @$pb.TagNumber(1)
   $core.bool hasTimestamp() => $_has(0);
   @$pb.TagNumber(1)
   void clearTimestamp() => clearField(1);
   @$pb.TagNumber(1)
-  $0.Timestamp ensureTimestamp() => $_ensure(0);
+  $2.Timestamp ensureTimestamp() => $_ensure(0);
 }
 
 class DownloadRequest extends $pb.GeneratedMessage {
@@ -479,27 +478,6 @@ class CommunicateResponse extends $pb.GeneratedMessage {
   $core.bool hasValue() => $_has(1);
   @$pb.TagNumber(2)
   void clearValue() => clearField(2);
-}
-
-class MiddleApi {
-  $pb.RpcClient _client;
-  MiddleApi(this._client);
-
-  $async.Future<PingResponse> ping($pb.ClientContext? ctx, PingRequest request) =>
-    _client.invoke<PingResponse>(ctx, 'Middle', 'Ping', request, PingResponse())
-  ;
-  $async.Future<HelloResponse> sayHello($pb.ClientContext? ctx, HelloRequest request) =>
-    _client.invoke<HelloResponse>(ctx, 'Middle', 'SayHello', request, HelloResponse())
-  ;
-  $async.Future<DownloadResponse> download($pb.ClientContext? ctx, DownloadRequest request) =>
-    _client.invoke<DownloadResponse>(ctx, 'Middle', 'Download', request, DownloadResponse())
-  ;
-  $async.Future<UploadResponse> upload($pb.ClientContext? ctx, UploadRequest request) =>
-    _client.invoke<UploadResponse>(ctx, 'Middle', 'Upload', request, UploadResponse())
-  ;
-  $async.Future<CommunicateResponse> communicate($pb.ClientContext? ctx, CommunicateRequest request) =>
-    _client.invoke<CommunicateResponse>(ctx, 'Middle', 'Communicate', request, CommunicateResponse())
-  ;
 }
 
 

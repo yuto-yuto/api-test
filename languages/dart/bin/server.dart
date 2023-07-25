@@ -1,10 +1,13 @@
-
 import 'package:dart_grpc/server/middle.dart';
+import 'package:dart_grpc/server/types_def.dart';
 import 'package:grpc/grpc.dart';
 
 Future<void> main(List<String> arguments) async {
   final server = Server.create(
-    services: [MiddleService()],
+    services: [
+      MiddleService(),
+      TypesDefService(),
+    ],
     codecRegistry: CodecRegistry(codecs: const [
       GzipCodec(),
       IdentityCodec(),

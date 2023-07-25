@@ -9,7 +9,6 @@
 // ignore_for_file: non_constant_identifier_names, prefer_final_fields
 // ignore_for_file: unnecessary_import, unnecessary_this, unused_import
 
-import 'dart:async' as $async;
 import 'dart:core' as $core;
 
 import 'package:fixnum/fixnum.dart' as $fixnum;
@@ -863,33 +862,6 @@ class StringIntegerValue extends $pb.GeneratedMessage {
   $core.bool hasNumber() => $_has(1);
   @$pb.TagNumber(2)
   void clearNumber() => clearField(2);
-}
-
-class TypesDefApi {
-  $pb.RpcClient _client;
-  TypesDefApi(this._client);
-
-  $async.Future<WithInt64RequestResponse> withInt64($pb.ClientContext? ctx, WithInt64RequestResponse request) =>
-    _client.invoke<WithInt64RequestResponse>(ctx, 'TypesDef', 'WithInt64', request, WithInt64RequestResponse())
-  ;
-  $async.Future<WithOneofResponse> withOneof($pb.ClientContext? ctx, WithOneofRequest request) =>
-    _client.invoke<WithOneofResponse>(ctx, 'TypesDef', 'WithOneof', request, WithOneofResponse())
-  ;
-  $async.Future<WithPrimitiveResponse> withPrimitive($pb.ClientContext? ctx, WithPrimitiveRequest request) =>
-    _client.invoke<WithPrimitiveResponse>(ctx, 'TypesDef', 'WithPrimitive', request, WithPrimitiveResponse())
-  ;
-  $async.Future<WithOptionalResponse> withOptional($pb.ClientContext? ctx, WithOptionalRequest request) =>
-    _client.invoke<WithOptionalResponse>(ctx, 'TypesDef', 'WithOptional', request, WithOptionalResponse())
-  ;
-  $async.Future<WithRepeatedInt64Response> withRepeatedInt64($pb.ClientContext? ctx, WithRepeatedInt64Request request) =>
-    _client.invoke<WithRepeatedInt64Response>(ctx, 'TypesDef', 'WithRepeatedInt64', request, WithRepeatedInt64Response())
-  ;
-  $async.Future<WithRepeatedStringIntResponse> withRepeatedStringInt($pb.ClientContext? ctx, WithRepeatedStringIntRequest request) =>
-    _client.invoke<WithRepeatedStringIntResponse>(ctx, 'TypesDef', 'WithRepeatedStringInt', request, WithRepeatedStringIntResponse())
-  ;
-  $async.Future<WithMapResponse> withMap($pb.ClientContext? ctx, WithMapRequest request) =>
-    _client.invoke<WithMapResponse>(ctx, 'TypesDef', 'WithMap', request, WithMapResponse())
-  ;
 }
 
 

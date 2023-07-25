@@ -13,8 +13,6 @@ import 'dart:convert' as $convert;
 import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
-import 'google/protobuf/timestamp.pbjson.dart' as $0;
-
 @$core.Deprecated('Use communicationTypeDescriptor instead')
 const CommunicationType$json = {
   '1': 'CommunicationType',
@@ -158,38 +156,4 @@ const CommunicateResponse$json = {
 final $typed_data.Uint8List communicateResponseDescriptor = $convert.base64Decode(
     'ChNDb21tdW5pY2F0ZVJlc3BvbnNlEiIKDGN1cnJlbnRDb3VudBgBIAEoA1IMY3VycmVudENvdW'
     '50EhQKBXZhbHVlGAIgASgDUgV2YWx1ZQ==');
-
-const $core.Map<$core.String, $core.dynamic> MiddleServiceBase$json = {
-  '1': 'Middle',
-  '2': [
-    {'1': 'Ping', '2': '.PingRequest', '3': '.PingResponse', '4': {}},
-    {'1': 'SayHello', '2': '.HelloRequest', '3': '.HelloResponse', '4': {}},
-    {'1': 'Download', '2': '.DownloadRequest', '3': '.DownloadResponse', '4': {}, '6': true},
-    {'1': 'Upload', '2': '.UploadRequest', '3': '.UploadResponse', '4': {}, '5': true},
-    {'1': 'Communicate', '2': '.CommunicateRequest', '3': '.CommunicateResponse', '4': {}, '5': true, '6': true},
-  ],
-};
-
-@$core.Deprecated('Use middleServiceDescriptor instead')
-const $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> MiddleServiceBase$messageJson = {
-  '.PingRequest': PingRequest$json,
-  '.PingResponse': PingResponse$json,
-  '.google.protobuf.Timestamp': $0.Timestamp$json,
-  '.HelloRequest': HelloRequest$json,
-  '.HelloResponse': HelloResponse$json,
-  '.DownloadRequest': DownloadRequest$json,
-  '.DownloadResponse': DownloadResponse$json,
-  '.UploadRequest': UploadRequest$json,
-  '.UploadResponse': UploadResponse$json,
-  '.CommunicateRequest': CommunicateRequest$json,
-  '.CommunicateResponse': CommunicateResponse$json,
-};
-
-/// Descriptor for `Middle`. Decode as a `google.protobuf.ServiceDescriptorProto`.
-final $typed_data.Uint8List middleServiceDescriptor = $convert.base64Decode(
-    'CgZNaWRkbGUSJQoEUGluZxIMLlBpbmdSZXF1ZXN0Gg0uUGluZ1Jlc3BvbnNlIgASKwoIU2F5SG'
-    'VsbG8SDS5IZWxsb1JlcXVlc3QaDi5IZWxsb1Jlc3BvbnNlIgASMwoIRG93bmxvYWQSEC5Eb3du'
-    'bG9hZFJlcXVlc3QaES5Eb3dubG9hZFJlc3BvbnNlIgAwARItCgZVcGxvYWQSDi5VcGxvYWRSZX'
-    'F1ZXN0Gg8uVXBsb2FkUmVzcG9uc2UiACgBEj4KC0NvbW11bmljYXRlEhMuQ29tbXVuaWNhdGVS'
-    'ZXF1ZXN0GhQuQ29tbXVuaWNhdGVSZXNwb25zZSIAKAEwAQ==');
 

@@ -11,5 +11,12 @@
             "type": "dart",
             "program": "./bin/server.dart"
         }
+        {
+            "name": "dart grpc client",
+            "cwd": "languages/dart",
+            "request": "launch",
+            "type": "dart",
+            "program": "./bin/client.dart"
+        }
     ]
 }
