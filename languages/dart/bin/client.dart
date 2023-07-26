@@ -61,5 +61,10 @@ Future<void> main(List<String> arguments) async {
   await typeHandler.withRepeatedStringInt(type: "number");
   await typeHandler.withRepeatedStringInt(type: "mix");
 
+  await typeHandler.withEnum();
+  await typeHandler.withEnum(state: DeviceState.DEVICE_STATE_READY);
+  await typeHandler.withEnum(state: DeviceState.DEVICE_STATE_RUNNING);
+  await typeHandler.withEnum(state: DeviceState.DEVICE_STATE_STOP);
+
   await channel.shutdown();
 }

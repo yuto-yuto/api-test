@@ -158,10 +158,32 @@ class TypesDefService extends rpc.TypesDefServiceBase {
 
     return response;
   }
-  
+
   @override
-  Future<WithEnumRequestResponse> withEnum(ServiceCall call, WithEnumRequestResponse request) {
-    // TODO: implement withEnum
-    throw UnimplementedError();
+  Future<WithEnumRequestResponse> withEnum(
+    ServiceCall call,
+    WithEnumRequestResponse request,
+  ) async {
+    print("--- withEnum ---");
+    print("(has: ${request.hasState()}, state: ${request.state})");
+
+    final response = rpc.WithEnumRequestResponse();
+
+    switch (request.state) {
+      case rpc.DeviceState.DEVICE_STATE_READY:
+        response.state = rpc.DeviceState.DEVICE_STATE_RUNNING;
+        break;
+      case rpc.DeviceState.DEVICE_STATE_RUNNING:
+        response.state = rpc.DeviceState.DEVICE_STATE_COMPLETED;
+        break;
+      case rpc.DeviceState.DEVICE_STATE_STOP:
+        response.state = rpc.DeviceState.DEVICE_STATE_ABORTED;
+        break;
+      default:
+        response.state = rpc.DeviceState.DEVICE_STATE_READY;
+        break;
+    }
+
+    return response;
   }
 }

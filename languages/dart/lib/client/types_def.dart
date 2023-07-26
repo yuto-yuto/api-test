@@ -100,12 +100,7 @@ class TypesDefServiceHandler {
       case "bytes":
         request.primitive.value.rawBytes = [48, 49, 50];
         break;
-      // default:
-      //   final primitive = rpc.PrimitiveType();
-      //   // primitive.value = rpc.PrimitiveType_Value();
-      //   request.primitive = primitive;
     }
-    print("set done");
 
     final result = await client.withPrimitive(request);
     print("(has: ${result.hasPrimitive()}"
@@ -150,5 +145,15 @@ class TypesDefServiceHandler {
       print("(hasNumber: ${value.hasNumber()}, value: ${value.number})");
       print("(hasText: ${value.hasText()}, value: ${value.text})");
     }
+  }
+
+  Future<void> withEnum({rpc.DeviceState? state}) async {
+    print("--- withEnum ---");
+    final request = rpc.WithEnumRequestResponse();
+    if (state != null) {
+      request.state = state;
+    }
+    final result = await client.withEnum(request);
+    print("value: ${result.state}");
   }
 }

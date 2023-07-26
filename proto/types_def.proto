@@ -99,7 +99,7 @@ message StringIntegerValue {
 }
 
 enum DeviceState {
-  DEVICE_STATE_UNSP = 0;
+  DEVICE_STATE_UNSPECIFIED = 0;
   DEVICE_STATE_READY = 1;
   DEVICE_STATE_RUNNING = 2;
   DEVICE_STATE_STOP = 3;
