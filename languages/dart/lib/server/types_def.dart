@@ -59,21 +59,21 @@ class TypesDefService extends rpc.TypesDefServiceBase {
     return rpc.WithOneofResponse()..text = "dummy text";
   }
 
-@override
-Future<rpc.WithOptionalResponse> withOptional(
-  ServiceCall ctx,
-  rpc.WithOptionalRequest request,
-) async {
-  print("--- withOptional ---");
-  print("optionValue: (${request.hasOptionValue()}, ${request.optionValue})"
-      ", type: (${request.hasType()}, ${request.type})");
+  @override
+  Future<rpc.WithOptionalResponse> withOptional(
+    ServiceCall ctx,
+    rpc.WithOptionalRequest request,
+  ) async {
+    print("--- withOptional ---");
+    print("optionValue: (${request.hasOptionValue()}, ${request.optionValue})"
+        ", type: (${request.hasType()}, ${request.type})");
 
-  if (request.hasOptionValue()) {
-    return rpc.WithOptionalResponse()..optionValue = $fixnum.Int64(11);
+    if (request.hasOptionValue()) {
+      return rpc.WithOptionalResponse()..optionValue = $fixnum.Int64(11);
+    }
+
+    return rpc.WithOptionalResponse();
   }
-
-  return rpc.WithOptionalResponse();
-}
 
   @override
   Future<rpc.WithPrimitiveResponse> withPrimitive(

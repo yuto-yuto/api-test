@@ -134,6 +134,7 @@ class TypesDefServiceHandler {
     } else if (type == "mix") {
       request.stringIntArray.addAll([
         rpc.StringIntegerValue()..number = $fixnum.Int64(11),
+        rpc.StringIntegerValue(),
         rpc.StringIntegerValue()..text = "dummy data 22",
       ]);
     }
