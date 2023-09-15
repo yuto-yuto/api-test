@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+option go_package = "api-test/grpc/apitest";
+
+service RestService {
+  rpc Echo(EchoMessageRequest) returns (EchoMessageResponse) {
+    option (google.api.http) = {
+      post: "/v1/echo"
+      body: "*"
+    };
+  }
+}
+
+message EchoMessageRequest {
+  string message = 1;
+}
+message EchoMessageResponse {
+  string message = 1;
+  uint64 count = 2;
+}

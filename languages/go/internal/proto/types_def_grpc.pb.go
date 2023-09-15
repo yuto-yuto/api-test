@@ -30,6 +30,7 @@ type TypesDefClient interface {
 	WithRepeatedInt64(ctx context.Context, in *WithRepeatedInt64Request, opts ...grpc.CallOption) (*WithRepeatedInt64Response, error)
 	WithRepeatedStringInt(ctx context.Context, in *WithRepeatedStringIntRequest, opts ...grpc.CallOption) (*WithRepeatedStringIntResponse, error)
 	WithMap(ctx context.Context, in *WithMapRequest, opts ...grpc.CallOption) (*WithMapResponse, error)
+	WithEnum(ctx context.Context, in *WithEnumRequestResponse, opts ...grpc.CallOption) (*WithEnumRequestResponse, error)
 }
 
 type typesDefClient struct {
@@ -103,6 +104,15 @@ func (c *typesDefClient) WithMap(ctx context.Context, in *WithMapRequest, opts .
 	return out, nil
 }
 
+func (c *typesDefClient) WithEnum(ctx context.Context, in *WithEnumRequestResponse, opts ...grpc.CallOption) (*WithEnumRequestResponse, error) {
+	out := new(WithEnumRequestResponse)
+	err := c.cc.Invoke(ctx, "/TypesDef/WithEnum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TypesDefServer is the server API for TypesDef service.
 // All implementations must embed UnimplementedTypesDefServer
 // for forward compatibility
@@ -115,6 +125,7 @@ type TypesDefServer interface {
 	WithRepeatedInt64(context.Context, *WithRepeatedInt64Request) (*WithRepeatedInt64Response, error)
 	WithRepeatedStringInt(context.Context, *WithRepeatedStringIntRequest) (*WithRepeatedStringIntResponse, error)
 	WithMap(context.Context, *WithMapRequest) (*WithMapResponse, error)
+	WithEnum(context.Context, *WithEnumRequestResponse) (*WithEnumRequestResponse, error)
 	mustEmbedUnimplementedTypesDefServer()
 }
 
@@ -142,6 +153,9 @@ func (UnimplementedTypesDefServer) WithRepeatedStringInt(context.Context, *WithR
 }
 func (UnimplementedTypesDefServer) WithMap(context.Context, *WithMapRequest) (*WithMapResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithMap not implemented")
+}
+func (UnimplementedTypesDefServer) WithEnum(context.Context, *WithEnumRequestResponse) (*WithEnumRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithEnum not implemented")
 }
 func (UnimplementedTypesDefServer) mustEmbedUnimplementedTypesDefServer() {}
 
@@ -282,6 +296,24 @@ func _TypesDef_WithMap_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TypesDef_WithEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithEnumRequestResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypesDefServer).WithEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TypesDef/WithEnum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypesDefServer).WithEnum(ctx, req.(*WithEnumRequestResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TypesDef_ServiceDesc is the grpc.ServiceDesc for TypesDef service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -316,6 +348,10 @@ var TypesDef_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithMap",
 			Handler:    _TypesDef_WithMap_Handler,
+		},
+		{
+			MethodName: "WithEnum",
+			Handler:    _TypesDef_WithEnum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
