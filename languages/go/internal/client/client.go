@@ -169,6 +169,7 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		if err != nil {
 			common.ShowErrorMessageInTrailer(stream)
 			if errors.Is(err, io.EOF) {
+				fmt.Println("GOT EOF1")
 				break
 			}
 
@@ -184,8 +185,12 @@ func (m *MiddleMan) Communicate(ctx context.Context, maxCount int64) {
 		})
 		if err != nil {
 			if errors.Is(err, io.EOF) {
-				_, err := stream.Recv()
-				log.Printf("[ERROR] failed to receive 2: %v\n", err)
+				fmt.Println("GOT EOF2")
+
+				if _, err := stream.Recv(); err != nil {
+					log.Printf("[ERROR] failed to receive 2: %v\n", err)
+				}
+
 				common.ShowErrorMessageInTrailer(stream) // not show anything
 				break
 			}
